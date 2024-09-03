@@ -1,0 +1,29 @@
+<h1 class="h3 mb-2">Sửa Phản Hồi</h1>
+<form class="row g-3" method="post" th:action="@{/admin/phanhoi/sua}" th:object="${dl}">
+    <div class="">
+        <input type="hidden" class="form-control" th:field="*{Id}">
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Tên</label>
+        <input type="text" class="form-control" th:field="*{ten}" >
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Địa Chỉ</label>
+        <input type="text" class="form-control" th:field="*{diaChi}" >
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Email</label>
+        <input type="text" class="form-control" th:field="*{email}" >
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Số Điện Thoại</label>
+        <input type="text" class="form-control" th:field="*{phone}" >
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Tiêu Đề</label>
+        <input type="text" class="form-control" th:field="*{tieuDe}" >
+    </div><div class="col-md-6 mt-4">
+        <label class="form-label">Tin Nhắn</label>
+        <input type="text" class="form-control" th:field="*{tinNhan}" >
+    </div>
+</form>

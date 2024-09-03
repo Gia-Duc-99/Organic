@@ -1,0 +1,40 @@
+<h1 class="h3 mb-2">Thêm Mới Ảnh Hệ Thống</h1>
+<form class="row g-3" method="post" th:action="@{/admin/anhhethong/them}" th:object="${dl}"
+    enctype="multipart/form-data">
+    <div class="">
+        <input type="hidden" class="form-control" th:field="*{Id}" disabled>
+    </div>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Ngày Tạo</label>
+        <input type="date" class="form-control" th:field="*{ngayTao}">
+    </div>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Ngày Sửa</label>
+        <input type="date" class="form-control" th:field="*{ngaySua}">
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Thứ Tự</label>
+        <input type="number" class="form-control" th:field="*{thuTu}">
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Tựa Đề</label>
+        <input type="text" class="form-control" th:field="*{tuaDe}">
+    </div>
+    <div class="col-md-6 mt-4">
+        <label for="formFile" class="form-label">Ảnh</label>
+        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Mô Tả</label>
+        <input type="text" class="form-control" th:field="*{moTa}">
+    </div>
+    <div class="col-md-6 mt-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
+                th:field="*{choPhep}">
+            <label class="form-check-label" for="flexCheckChecked">
+                Cho Phép
+            </label>
+        </div>
+    </div>
+</form>

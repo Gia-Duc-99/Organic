@@ -1,0 +1,22 @@
+<form>
+    <label for>
+        Label
+    </label>
+    <input type="text" />
+    <br><br>
+    <label for>
+        Label
+    </label>
+    <input type="text" />
+</form>
+<!--dùng JS để vô hiệu hóa toàn bộ form-->
+<script>
+    var form = document.querySelector("form");
+    var elements = form.elements;
+    for (var i = 0, len = elements.length; i < len; ++i) {
+        elements[i].readOnly = true;
+        elements[i].disabled = "disabled";
+    }
+</script>
+
+<input type="text" readonly/>

@@ -1,0 +1,47 @@
+<h1 class="h3 mb-2">Chi Tiết Nhân Viên</h1>
+<form class="row g-3" method="post" th:object="${dl}">
+    <div class="">
+        <input type="hidden" class="form-control" th:field="*{Id}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Tên Đăng Nhập</label>
+        <input type="text" class="form-control" th:field="*{tenDangNhap}" id="TDNX" disabled>
+    </div>
+    <div class="col-6 mt-4">
+        <label class="form-label">Tên Đầy Đủ</label>
+        <input type="text" class="form-control" placeholder="Nhập họ và tên" th:field="*{tenDayDu}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" th:field="*{email}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label for="inputPhone" class="form-label">Điện Thoại</label>
+        <input type="tel" class="form-control" id="inputPhone" th:field="*{dienThoai}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Thứ Tự</label>
+        <input type="number" class="form-control" th:field="*{thuTu}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label for="formFile" class="form-label">Ảnh</label>
+        <input class="form-control" type="file" id="formFile" th:field="*{anhDaiDien}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Mô Tả</label>
+        <textarea class="form-control" th:field="*{moTa}" disabled></textarea>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Ngày Hết Hạn</label>
+        <input type="date" class="form-control" th:field="*{ngayHetHan}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
+                th:field="*{trangThai}" disabled>
+            <label class="form-check-label" for="flexCheckChecked">
+                Cho Phép
+            </label>
+        </div>
+    </div>
+</form>
