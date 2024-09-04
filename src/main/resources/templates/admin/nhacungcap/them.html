@@ -1,6 +1,5 @@
-<h1 class="h3 mb-2">Thêm Mới Ảnh Hệ Thống</h1>
-<form class="row g-3" method="post" th:action="@{/admin/anhhethong/them}" th:object="${dl}"
-    enctype="multipart/form-data">
+<h1 class="h3 mb-2">Thêm Mới Nhà Cung Cấp</h1>
+<form class="row g-3" method="post" th:action="@{/admin/nhacungcap/them}" th:object="${dl}" enctype="multipart/form-data">
     <div class="">
         <input type="hidden" class="form-control" th:field="*{Id}" disabled>
     </div>
@@ -9,16 +8,24 @@
         <input type="number" class="form-control" th:field="*{thuTu}">
     </div>
     <div class="col-md-3 mt-4">
-        <label class="form-label">Tựa Đề</label>
-        <input type="text" class="form-control" th:field="*{tuaDe}">
+        <label class="form-label">Tên</label>
+        <input type="text" class="form-control" th:field="*{ten}">
     </div>
-    <div class="col-md-6 mt-4">
-        <label for="formFile" class="form-label">Ảnh</label>
-        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Đường Link</label>
+        <input type="text" class="form-control" th:field="*{link}">
     </div>
     <div class="col-md-6 mt-4">
         <label class="form-label">Mô Tả</label>
         <input type="text" class="form-control" th:field="*{moTa}">
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Số Điện Thoại</label>
+        <input type="text" class="form-control" th:field="*{phone}">
+    </div>
+    <div class="col-md-6 mt-4">
+        <label for="formFile" class="form-label">Ảnh</label>
+        <input class="form-control" type="file" id="formFile" th:field="*{anh}">
     </div>
     <div class="col-md-6 mt-4">
         <div class="form-check">

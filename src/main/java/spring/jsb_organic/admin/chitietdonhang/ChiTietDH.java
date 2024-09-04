@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import spring.jsb_organic.admin.donhang.DonHang;
+import spring.jsb_organic.admin.sanpham.SanPham;
 
 @Entity
 @Getter
@@ -20,7 +21,6 @@ public class ChiTietDH {
     private int id;
 
     private String ten;
-    private String model;
     private int soLuong;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
@@ -37,7 +37,7 @@ public class ChiTietDH {
     private DonHang donHang;
 
     // Mỗi chi tiết đơn hàng phải liên quan đến 1 sản phẩm
-    // @ManyToOne
-    // @JoinColumn(name = "maSanPham", insertable = false, updatable = false)
-    // private SanPham sanPham;
+    @ManyToOne
+    @JoinColumn(name = "maSanPham", insertable = false, updatable = false)
+    private SanPham sanPham;
 }

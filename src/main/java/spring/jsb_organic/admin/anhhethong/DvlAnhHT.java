@@ -68,14 +68,10 @@ public class DvlAnhHT {
                 String savedFileName = filePath.substring(filePath.lastIndexOf("/") + 1);
                 dl.setDuongDan("/anhhethong/" + savedFileName);
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
         }
         this.kdl.save(dl);
-    }
-
-    public void luuAnhHeThong(AnhHeThong dl) {
-        luu(dl);
     }
 
     public void xoaAnhHeThong(int id) {

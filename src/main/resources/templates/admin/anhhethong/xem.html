@@ -4,12 +4,12 @@
         <input type="hidden" class="form-control" th:field="*{Id}" disabled>
     </div>
     <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Ngày Tạo</label>
-        <input type="date" class="form-control" th:field="*{ngayTao}" disabled>
+        <label class="form-label">Ngày Tạo</label>
+        <input type="text" class="form-control" th:value="*{ngayTao}" disabled>
     </div>
     <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Ngày Sửa</label>
-        <input type="date" class="form-control" th:field="*{ngaySua}" disabled>
+        <label class="form-label">Ngày Sửa</label>
+        <input type="text" class="form-control" th:value="*{ngaySua}" disabled>
     </div>
     <div class="col-md-3 mt-4">
         <label class="form-label">Thứ Tự</label>
@@ -21,7 +21,7 @@
     </div>
     <div class="col-md-6 mt-4">
         <label for="formFile" class="form-label">Ảnh</label>
-        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}" disabled>
+        <img th:src="${dl.duongDan}" style="height: 80px" disabled/>
     </div>
     <div class="col-md-6 mt-4">
         <label class="form-label">Mô Tả</label>

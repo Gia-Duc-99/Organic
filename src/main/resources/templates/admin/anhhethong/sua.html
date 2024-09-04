@@ -1,4 +1,4 @@
-<h1 class="h3 mb-2">Thêm Mới Ảnh Hệ Thống</h1>
+<h1 class="h3 mb-2">Sửa Ảnh Hệ Thống</h1>
 <form class="row g-3" method="post" th:action="@{/admin/anhhethong/sua}" th:object="${dl}"
     enctype="multipart/form-data">
     <div class="">
@@ -13,7 +13,11 @@
         <input type="text" class="form-control" th:field="*{tuaDe}">
     </div>
     <div class="col-md-6 mt-4">
-        <label for="formFile" class="form-label">Ảnh</label>
+        <label class="form-label">Ảnh Cũ</label>
+        <input type="text" class="form-control" th:value="*{duongDan}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label for="formFile" class="form-label">Chọn Ảnh Mới</label>
         <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
     </div>
     <div class="col-md-6 mt-4">

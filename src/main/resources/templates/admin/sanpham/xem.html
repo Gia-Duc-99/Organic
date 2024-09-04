@@ -1,0 +1,63 @@
+<h1 class="h3 mb-2">Xem Chi Tiết Sản Phẩm</h1>
+<form class="row g-3" method="post" th:object="${dl}">
+    <div class="">
+        <input type="hidden" class="form-control" th:field="*{Id}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Thứ Tự</label>
+        <input type="number" class="form-control" th:field="*{thuTu}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Cho Phép</label>
+        <input type="text" class="form-control" th:field="*{choPhep}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Tên</label>
+        <input type="text" class="form-control" th:field="*{ten}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Số Lượng</label>
+        <input type="text" class="form-control" th:field="*{soLuong}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Trạng Thái</label>
+        <input type="text" class="form-control" th:field="*{trangThai}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Đơn Giá</label>
+        <input type="text" class="form-control" th:field="*{donGia}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <label class="form-label">Giảm Giá</label>
+        <input type="text" class="form-control" th:field="*{giamGia}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Ngày Hết Hạn</label>
+        <input type="date" class="form-control" th:field="*{ngayHetHan}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label for="formFile" class="form-label">Ảnh</label>
+        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}" disabled>
+    </div>
+    <div class="col-md-6 mt-4">
+        <label class="form-label">Mô Tả</label>
+        <input type="text" class="form-control" th:field="*{moTa}" disabled>
+    </div>
+    <div class="col-md-3 mt-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
+                th:field="*{choPhep}">
+            <label class="form-check-label" for="flexCheckChecked" disabled>
+                Cho Phép
+            </label>
+        </div>
+    </div>
+    <div class="col-md-3 mt-4">
+        <select class="form-select" aria-label="Default select example" disabled>
+            <option selected>Nhà Cung Cấp</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+    </div>
+</form>

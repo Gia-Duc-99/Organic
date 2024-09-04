@@ -1,5 +1,5 @@
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Quản Lý Ảnh Hệ Thống</h1>
+<h1 class="h3 mb-2 text-gray-800">Quản Lý Sản Phẩm</h1>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -30,10 +30,13 @@
                     <tr>
                         <th>Id</th>
                         <th>Ảnh</th>
-                        <th>Ngày Tạo</th>
-                        <th>Ngày Sửa</th>
-                        <th>Cho Phép</th>
-                        <th>Tựa Đề</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Đơn Giá</th>
+                        <th>Trạng Thái</th>
+                        <th>Số Lượng</th>
+                        <th>Đã Bán</th>
+                        <th>Nhà Cung Cấp</th>
+                        <th>Danh Mục</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -41,10 +44,13 @@
                     <tr>
                         <th>Id</th>
                         <th>Ảnh</th>
-                        <th>Ngày Tạo</th>
-                        <th>Ngày Sửa</th>
-                        <th>Cho Phép</th>
-                        <th>Tựa Đề</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Đơn Giá</th>
+                        <th>Trạng Thái</th>
+                        <th>Số Lượng</th>
+                        <th>Đã Bán</th>
+                        <th>Nhà Cung Cấp</th>
+                        <th>Danh Mục</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -52,12 +58,15 @@
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
                         <td th:text="${dl.Id}"></td>
                         <td>
-                            <img th:src="${dl.duongDan}" style="height: 80px" />
+                            <img th:src="${dl.anh}" style="height: 80px" />
                         </td>
-                        <td th:text="${dl.ngayTao}"></td>
-                        <td th:text="${dl.ngaySua}"></td>
-                        <td th:text="${dl.getChoPhepVi()}"></td>
-                        <td th:text="${dl.tuaDe}"></td>
+                        <td th:text="${dl.ten}"></td>
+                        <td th:text="${dl.donGia}"></td>
+                        <td th:text="${dl.trangThai}"></td>
+                        <td th:text="${dl.soLuong}"></td>
+                        <td th:text="${dl.daBan}"></td>
+                        <td th:text="${dl.nhaCungCap.ten}"></td>
+                        <td th:text="${dl.danhMuc.ten}"></td>
                         <td>
                             <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-eye"></i>Xem
@@ -79,13 +88,13 @@
     </div>
 </div>
 <div id="formThemContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/them.html"></div>
+    <div th:replace="/admin/sanpham/them.html"></div>
 </div>
 <div id="formXemContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/xem.html"></div>
+    <div th:replace="/admin/sanpham/xem.html"></div>
 </div>
 <div id="formSuaContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/sua.html"></div>
+    <div th:replace="/admin/sanpham/sua.html"></div>
 </div>
 
 <a class="scroll-to-top rounded" href="#page-top">
@@ -95,10 +104,10 @@
 <script>
     window.showViewModal = function (id) {
         document.getElementById('modalActionBtn').style.display = 'none';
-        showModal('/admin/anhhethong/xem?id=' + id, 'Xem Chi Tiết', '', null);
+        showModal('/admin/sanpham/xem?id=' + id, 'Xem Chi Tiết', '', null);
     }
     window.showEditModal = function (id) {
-        showModal('/admin/anhhethong/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
+        showModal('/admin/sanpham/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
             document.querySelector('#showModal form').submit();
         });
     }
@@ -108,7 +117,7 @@
         <p>Bạn có chắc chắn muốn xóa mục này không?</p> `;
         document.getElementById('modalActionBtn').innerText = 'Xóa';
         document.getElementById('modalActionBtn').onclick = function () {
-            var deleteUrl = '/admin/anhhethong/xoa?id=' + id;
+            var deleteUrl = '/admin/sanpham/xoa?id=' + id;
             window.location.href = deleteUrl;
         };
         $('#showModal').modal('show');

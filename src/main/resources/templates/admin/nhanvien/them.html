@@ -1,5 +1,5 @@
 <h1 class="h3 mb-2">Thêm Mới Nhân Viên</h1>
-<form class="row g-3" method="post" th:action="@{/admin/nhanvien/them}" th:object="${dl}">
+<form class="row g-3" method="post" th:action="@{/admin/nhanvien/them}" th:object="${dl}" enctype="multipart/form-data">
     <div class="col-md-6 mt-4">
         <label class="form-label">Tên Đăng Nhập</label>
         <input type="text" class="form-control" th:field="*{tenDangNhap}">
@@ -30,7 +30,7 @@
     </div>
     <div class="col-md-6 mt-4">
         <label for="formFile" class="form-label">Ảnh</label>
-        <input class="form-control" type="file" id="formFile" th:field="*{anhDaiDien}">
+        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
     </div>
     <div class="col-md-6 mt-4">
         <label class="form-label">Mô Tả</label>

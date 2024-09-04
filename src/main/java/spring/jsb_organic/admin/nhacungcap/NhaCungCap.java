@@ -1,69 +1,52 @@
-package spring.jsb_organic.admin.anhhethong;
+package spring.jsb_organic.admin.nhacungcap;
 
-import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
+
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Getter
 @Setter
-public class AnhHeThong {
+public class NhaCungCap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int thuTu;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
     private Boolean choPhep;
-    private int thuTu;
-
-    private String tuaDe;
-
+    private String phone;
+    private String ten;
+    private String anh;
+    private String link;
     @Column(columnDefinition = "LONGTEXT")
     private String moTa;
 
     @Transient
     private MultipartFile mtFile;
-    private String duongDan;
 
     public String getChoPhepVi() {
-
         if (this.choPhep == null)
             this.choPhep = false;
 
-        return this.choPhep ? "Cho Phép" : "Cấm, Không Cho";
-    }
-
-    public Boolean KhongHopLe() {
-        var khl = false;
-        return khl;
-    }
-
-    // Getter và Setter cho mtFile
-    public MultipartFile getMtFile() {
-        return mtFile;
-    }
-
-    public void setMtFile(MultipartFile mtFile) {
-        this.mtFile = mtFile;
+        return this.choPhep ? "Được Phép" : "Bị Cấm";
     }
 
     public String getNgayTaoVi() {
-        if (this.ngayTao == null)
-            return "";
         return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.ngayTao);
     }
 
     public String getNgaySuaVi() {
-        if (this.ngaySua == null)
-            return "";
         return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.ngaySua);
     }
 }

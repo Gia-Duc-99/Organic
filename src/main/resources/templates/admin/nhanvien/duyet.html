@@ -25,6 +25,7 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
+                        <th>Ảnh</th>
                         <th>Tên Đầy Đủ</th>
                         <th>Email</th>
                         <th>Trạng Thái</th>
@@ -34,6 +35,7 @@
                 </thead>
                 <tfoot>
                     <tr>
+                        <th>Ảnh</th>
                         <th>Tên Đầy Đủ</th>
                         <th>Email</th>
                         <th>Trạng Thái</th>
@@ -43,6 +45,9 @@
                 </tfoot>
                 <tbody>
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
+                        <td>
+                            <img th:src="${dl.anhDaiDien}" style="height: 80px" />
+                        </td>
                         <td th:text="${dl.tenDayDu}"></td>
                         <td th:text="${dl.email}"></td>
                         <td>

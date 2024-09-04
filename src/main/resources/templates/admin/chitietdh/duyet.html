@@ -1,5 +1,5 @@
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Quản Lý Ảnh Hệ Thống</h1>
+<h1 class="h3 mb-2 text-gray-800">Quản Lý Chi Tiết Đơn Hàng</h1>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -29,35 +29,37 @@
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Ảnh</th>
-                        <th>Ngày Tạo</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Ngày Đặt</th>
                         <th>Ngày Sửa</th>
-                        <th>Cho Phép</th>
-                        <th>Tựa Đề</th>
+                        <th>Đơn Giá</th>
+                        <th>Tổng Tiền</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Id</th>
-                        <th>Ảnh</th>
-                        <th>Ngày Tạo</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Ngày Đặt</th>
                         <th>Ngày Sửa</th>
-                        <th>Cho Phép</th>
-                        <th>Tựa Đề</th>
+                        <th>Đơn Giá</th>
+                        <th>Tổng Tiền</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
                 <tbody>
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
                         <td th:text="${dl.Id}"></td>
-                        <td>
-                            <img th:src="${dl.duongDan}" style="height: 80px" />
-                        </td>
+                        <td th:text="${dl.maSanPham.ten}"></td>
+                        <td th:text="${dl.soLuong}"></td>
                         <td th:text="${dl.ngayTao}"></td>
                         <td th:text="${dl.ngaySua}"></td>
-                        <td th:text="${dl.getChoPhepVi()}"></td>
-                        <td th:text="${dl.tuaDe}"></td>
+                        <td th:text="${dl.donGia}"></td>
+                        <td th:text="${dl.tongTien}"></td>
+
                         <td>
                             <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-eye"></i>Xem
@@ -78,27 +80,27 @@
         </div>
     </div>
 </div>
-<div id="formThemContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/them.html"></div>
-</div>
-<div id="formXemContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/xem.html"></div>
-</div>
-<div id="formSuaContainer" style="display: none;">
-    <div th:replace="/admin/anhhethong/sua.html"></div>
-</div>
+<!-- <div id="formThemContainer" style="display: none;">
+    <div th:replace="/admin/donhang/them.html"></div>
+</div> -->
+<!-- <div id="formXemContainer" style="display: none;">
+    <div th:replace="/admin/donhang/xem.html"></div>
+</div> -->
+<!-- <div id="formSuaContainer" style="display: none;">
+    <div th:replace="/admin/donhang/sua.html"></div>
+</div> -->
 
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<script>
+<!-- <script>
     window.showViewModal = function (id) {
         document.getElementById('modalActionBtn').style.display = 'none';
-        showModal('/admin/anhhethong/xem?id=' + id, 'Xem Chi Tiết', '', null);
+        showModal('/admin/donhang/xem?id=' + id, 'Xem Chi Tiết', '', null);
     }
     window.showEditModal = function (id) {
-        showModal('/admin/anhhethong/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
+        showModal('/admin/donhang/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
             document.querySelector('#showModal form').submit();
         });
     }
@@ -108,9 +110,9 @@
         <p>Bạn có chắc chắn muốn xóa mục này không?</p> `;
         document.getElementById('modalActionBtn').innerText = 'Xóa';
         document.getElementById('modalActionBtn').onclick = function () {
-            var deleteUrl = '/admin/anhhethong/xoa?id=' + id;
+            var deleteUrl = '/admin/donhang/xoa?id=' + id;
             window.location.href = deleteUrl;
         };
         $('#showModal').modal('show');
     }
-</script>
+</script> -->
