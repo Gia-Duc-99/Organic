@@ -31,10 +31,8 @@ public class SanPham {
     private int thuTu;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
-    private Boolean choPhep;
-    private String ten;
+    private String tenSP;
     private String anh;
-    private String link;
     private int soLuong;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -51,23 +49,24 @@ public class SanPham {
     private LocalDate ngayHetHan;
     
     @Column(name = "maNhaCungCap")
-    private int maNhaCungCap;
+    private Integer maNhaCungCap;
     @ManyToOne @JoinColumn(name="maNhaCungCap",insertable=false,updatable=false)
     private NhaCungCap nhaCungCap;
 
-    @ManyToOne
-    @JoinColumn(name = "danhMuc", insertable = false, updatable = false)
+    @Column(name = "maDanhMuc")
+    private Integer maDanhMuc;
+    @ManyToOne @JoinColumn(name = "maDanhMuc", insertable = false, updatable = false)
     private DanhMuc danhMuc;
 
     public String getDonGiaVi() {
         return String.format("%,d", Math.round(this.donGia));
     }
 
-    public String getChoPhepVi() {
-        if (this.choPhep == null)
-            this.choPhep = false;
+    public String getTrangThaiVi() {
+        if (this.trangThai == null)
+            this.trangThai = false;
 
-        return this.choPhep ? "Được Phép" : "Bị Cấm";
+        return this.trangThai ? "Được Phép" : "Bị Cấm";
     }
 
     public String getNgayTaoVi() {

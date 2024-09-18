@@ -54,18 +54,6 @@ public class QdlNhaCungCap {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/nhacungcap/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        NhaCungCap dl = new NhaCungCap();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/nhacungcap/them.html");
-        return "layout/layout-admin.html";
-    }
 
     @GetMapping("/nhacungcap/sua")
     public String getSua(Model model, @RequestParam("id") int id) {

@@ -24,8 +24,8 @@ public class ChiTietDH {
     private int soLuong;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
-    private String donGia;
-    private int tongTien;
+    private float donGia;
+    private float tongTien;
 
     // #region Nếu không có FK thì bỏ mã này đi
     private int maDonHang;

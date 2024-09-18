@@ -14,5 +14,5 @@ public class DanhMuc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String ten;
+    private String tenDM;
 }

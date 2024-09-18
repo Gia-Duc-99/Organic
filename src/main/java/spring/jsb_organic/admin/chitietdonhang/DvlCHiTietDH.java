@@ -14,7 +14,7 @@ public class DvlCHiTietDH {
         return kdl.findAll();
     }
 
-    public List<ChiTietDH> duyetDH() {
+    public List<ChiTietDH> duyetCTDH() {
         return kdl.findAll();
     }
 
@@ -33,7 +33,7 @@ public class DvlCHiTietDH {
 
     }
 
-    public ChiTietDH xemDH(int id) {
+    public ChiTietDH xemCTDH(int id) {
 
         ChiTietDH dl = null;
 
@@ -47,11 +47,11 @@ public class DvlCHiTietDH {
 
     }
 
-    public void luuDH(ChiTietDH dl) {
+    public void luuCTDH(ChiTietDH dl) {
         this.kdl.save(dl);
     }
 
-    public void xoaDH(int id) {
+    public void xoaCTDH(int id) {
         this.kdl.deleteById(id);
     }
 }

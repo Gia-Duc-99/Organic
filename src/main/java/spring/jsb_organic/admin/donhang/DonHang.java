@@ -26,5 +26,7 @@ public class DonHang {
     private String tongTien;
     private Boolean trangThai;
     private LocalDate ngayTao;
+    private LocalDate ngaySua;
+
 
 }

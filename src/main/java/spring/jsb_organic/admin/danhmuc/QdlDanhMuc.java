@@ -53,19 +53,6 @@ public class QdlDanhMuc {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/danhmuc/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        DanhMuc dl = new DanhMuc();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/danhmuc/them.html");
-        return "layout/layout-admin.html";
-    }
-
     @GetMapping("/danhmuc/sua")
     public String getSua(Model model, @RequestParam("id") int id) {
         if (Qdl.NVChuaDangNhap(request))

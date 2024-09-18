@@ -60,13 +60,13 @@
                         <td>
                             <img th:src="${dl.anh}" style="height: 80px" />
                         </td>
-                        <td th:text="${dl.ten}"></td>
+                        <td th:text="${dl.tenSP}"></td>
                         <td th:text="${dl.donGia}"></td>
                         <td th:text="${dl.trangThai}"></td>
                         <td th:text="${dl.soLuong}"></td>
                         <td th:text="${dl.daBan}"></td>
                         <td th:text="${dl.nhaCungCap.ten}"></td>
-                        <td th:text="${dl.danhMuc.ten}"></td>
+                        <td th:text="${dl.danhMuc.tenDM}"></td>
                         <td>
                             <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-eye"></i>Xem

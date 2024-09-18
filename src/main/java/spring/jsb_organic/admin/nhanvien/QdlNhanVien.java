@@ -46,17 +46,6 @@ public class QdlNhanVien {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/nhanvien/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request)) {
-            return "redirect:/admin/nhanvien/dangnhap";
-        }
-        NhanVien dl = new NhanVien();
-        model.addAttribute("dl", dl);
-        model.addAttribute("content", "/admin/nhanvien/them.html");
-        return "layout/layout-admin.html";
-    }
-
     @GetMapping("/nhanvien/sua")
     public String getSua(Model model, @RequestParam("id") int id) {
         NhanVien dl = dvl.xemNhanVien(id);

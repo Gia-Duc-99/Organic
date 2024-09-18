@@ -53,19 +53,6 @@ public class QdlCaiDat {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/caidat/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        CaiDat dl = new CaiDat();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/caidat/them.html");
-        return "layout/layout-admin.html";
-    }
-
     @GetMapping("/caidat/sua")
     public String getSua(Model model, @RequestParam("id") int id) {
         if (Qdl.NVChuaDangNhap(request))

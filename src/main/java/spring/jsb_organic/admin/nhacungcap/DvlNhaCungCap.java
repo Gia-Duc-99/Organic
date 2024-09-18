@@ -11,7 +11,9 @@ public class DvlNhaCungCap {
     private KdlNhaCungCap kdl;
 
     public List<NhaCungCap> dsNhaCungCap() {
-        return kdl.findAll();
+        List<NhaCungCap> nhaCungCaps = kdl.findAll();
+       System.out.println("Danh sách nhà cung cấp: " + nhaCungCaps);
+       return nhaCungCaps;
     }
 
     public List<NhaCungCap> duyetNCC() {
@@ -54,5 +56,6 @@ public class DvlNhaCungCap {
     public void xoaNCC(int id) {
         this.kdl.deleteById(id);
     }
+    
 
 }

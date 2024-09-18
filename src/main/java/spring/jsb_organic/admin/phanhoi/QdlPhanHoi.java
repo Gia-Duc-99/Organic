@@ -54,19 +54,6 @@ public class QdlPhanHoi {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/phanhoi/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        PhanHoi dl = new PhanHoi();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/phanhoi/them.html");
-        return "layout/layout-admin.html";
-    }
-
     @GetMapping("/phanhoi/sua")
     public String getSua(Model model, @RequestParam("id") int id) {
         if (Qdl.NVChuaDangNhap(request))

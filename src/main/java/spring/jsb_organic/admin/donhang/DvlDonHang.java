@@ -47,8 +47,8 @@ public class DvlDonHang {
 
     }
 
-    public void luuDH(DonHang dl) {
-        this.kdl.save(dl);
+    public DonHang luuDH(DonHang dl) {
+        return this.kdl.save(dl);
     }
 
     public void xoaDH(int id) {

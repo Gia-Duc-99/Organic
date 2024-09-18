@@ -43,12 +43,8 @@
                 <tbody>
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
                         <td th:text="${dl.Id}"></td>
-                        <td th:text="${dl.ten}"></td>
+                        <td th:text="${dl.tenDM}"></td>
                         <td>
-                            <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
-                                <i class="bi bi-eye"></i>Xem
-                            </button>
-                            &nbsp;
                             <button class="btn btn-outline-warning" th:onclick="'showEditModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-pencil-fill"></i>Sửa
                             </button>
@@ -76,10 +72,6 @@
 </a>
 
 <script>
-    window.showViewModal = function (id) {
-        document.getElementById('modalActionBtn').style.display = 'none';
-        showModal('/admin/danhmuc/xem?id=' + id, 'Xem Chi Tiết', '', null);
-    }
     window.showEditModal = function (id) {
         showModal('/admin/danhmuc/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
             document.querySelector('#showModal form').submit();

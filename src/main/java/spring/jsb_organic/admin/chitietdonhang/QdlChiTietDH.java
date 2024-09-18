@@ -23,7 +23,7 @@ public class QdlChiTietDH {
 
     @Autowired
     private HttpSession session;
-
+    //http://localhost:6868/admin/chitietdh
     @GetMapping({
             "/chitietdh",
             "/chitietdh/duyet"
@@ -36,7 +36,7 @@ public class QdlChiTietDH {
             return "redirect:/admin/nhanvien/dangnhap";
         }
 
-        List<ChiTietDH> list = dvl.duyetDH();
+        List<ChiTietDH> list = dvl.duyetCTDH();
         ChiTietDH dl = new ChiTietDH();
 
         model.addAttribute("dl", dl);
@@ -55,7 +55,7 @@ public class QdlChiTietDH {
         if (Qdl.NVChuaDangNhap(request))
             return "redirect:/admin/nhanvien/dangnhap";
 
-        ChiTietDH dl = dvl.xemDH(id);
+        ChiTietDH dl = dvl.timDH(id);
 
         model.addAttribute("dl", dl);
 

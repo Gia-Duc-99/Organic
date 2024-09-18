@@ -54,18 +54,6 @@ public class QdlQuangCao {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/quangcao/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        QuangCao dl = new QuangCao();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/quangcao/them.html");
-        return "layout/layout-admin.html";
-    }
 
     @GetMapping("/quangcao/sua")
     public String getSua(Model model, @RequestParam("id") int id) {

@@ -4,6 +4,9 @@
     <div class="">
         <input type="hidden" class="form-control" th:field="*{Id}">
     </div>
+    <div class="">
+        <input type="hidden" class="form-control" th:field="*{ngayTao}">
+    </div>
     <div class="col-md-3 mt-4">
         <label class="form-label">Thứ Tự</label>
         <input type="number" class="form-control" th:field="*{thuTu}">
@@ -15,6 +18,7 @@
     <div class="col-md-6 mt-4">
         <label class="form-label">Ảnh Cũ</label>
         <input type="text" class="form-control" th:value="*{duongDan}" disabled>
+        <input type="hidden" th:field="*{duongDan}">
     </div>
     <div class="col-md-6 mt-4">
         <label for="formFile" class="form-label">Chọn Ảnh Mới</label>

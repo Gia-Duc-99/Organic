@@ -53,20 +53,6 @@ public class QdlAnhHT {
         return "layout/layout-admin.html";
     }
 
-    @GetMapping("/anhhethong/them")
-    public String getThem(Model model) {
-        if (Qdl.NVChuaDangNhap(request))
-            return "redirect:/admin/nhanvien/dangnhap";
-
-        AnhHeThong dl = new AnhHeThong();
-
-        model.addAttribute("dl", dl);
-
-        model.addAttribute("content", "/admin/anhhethong/them.html");
-
-        return "layout/layout-admin.html";
-    }
-
     @GetMapping("/anhhethong/sua")
     public String getSua(Model model, @RequestParam("id") int id) {
         if (Qdl.NVChuaDangNhap(request))
@@ -131,8 +117,7 @@ public class QdlAnhHT {
             RedirectAttributes redirectAttributes) {
         if (Qdl.NVChuaDangNhap(request))
             return "redirect:/admin/nhanvien/dangnhap";
-        AnhHeThong existingDl = dvl.xem(dl.getId());
-        LocalDate ngayTao = existingDl.getNgayTao();
+
         dl.setNgaySua(LocalDate.now());
 
         // Kiểm tra xem có tệp mới không
@@ -142,7 +127,6 @@ public class QdlAnhHT {
             // Nếu không có tệp mới, chỉ cần lưu lại thông tin hiện tại
             dvl.luu(dl);
         }
-        dl.setNgayTao(ngayTao);
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc cập nhật!");
         return "redirect:/admin/anhhethong/duyet";
     }
