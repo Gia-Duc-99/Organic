@@ -53,8 +53,8 @@
     });
 
     /*------------------
-		Navigation
-	--------------------*/
+        Navigation
+    --------------------*/
     $(".mobile-menu").slicknav({
         prependTo: '#mobile-menu-wrap',
         allowParentLinks: true
@@ -96,7 +96,7 @@
     });
 
 
-    $('.hero__categories__all').on('click', function(){
+    $('.hero__categories__all').on('click', function () {
         $('.hero__categories ul').slideToggle(400);
     });
 
@@ -160,8 +160,8 @@
     });
 
     /*-----------------------
-		Price Range Slider
-	------------------------ */
+        Price Range Slider
+    ------------------------ */
     var rangeSlider = $(".price-range"),
         minamount = $("#minamount"),
         maxamount = $("#maxamount"),
@@ -186,8 +186,8 @@
     $("select").niceSelect();
 
     /*------------------
-		Single Product
-	--------------------*/
+        Single Product
+    --------------------*/
     $('.product__details__pic__slider img').on('click', function () {
 
         var imgurl = $(this).data('imgbigurl');
@@ -198,27 +198,54 @@
             });
         }
     });
-
     /*-------------------
-		Quantity change
-	--------------------- */
+        Quantity change
+    --------------------- */
     var proQty = $('.pro-qty');
     proQty.prepend('<span class="dec qtybtn">-</span>');
     proQty.append('<span class="inc qtybtn">+</span>');
     proQty.on('click', '.qtybtn', function () {
         var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
+        var inputField = $button.parent().find('input');
+        var oldValue = parseFloat(inputField.val());
+        var id_sanpham = inputField.attr('id').split('_')[2];  // Lấy ID sản phẩm từ input
+        var ten_sanpham = $button.closest('tr').find('h5').text(); // Lấy tên sản phẩm
+        var newVal;
+
         if ($button.hasClass('inc')) {
-            var newVal = parseFloat(oldValue) + 1;
+            newVal = oldValue + 1;  // Tăng số lượng
         } else {
-            // Don't allow decrementing below zero
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
+            newVal = oldValue > 1 ? oldValue - 1 : 1;  // Giảm số lượng nhưng không dưới 1
         }
-        $button.parent().find('input').val(newVal);
+
+        // Cập nhật số lượng trong ô input
+        inputField.val(newVal);
+        $.ajax({
+            url: '/giohang/sua/ajax',  // Đường dẫn API cập nhật giỏ hàng
+            type: 'post',
+            data: {
+                id_sanpham: id_sanpham,
+                ten: ten_sanpham,
+                so_luong: newVal
+            },
+            dataType: 'json',
+            success: function (json) {
+                if (json.success) {
+                    // Cập nhật tổng tiền của sản phẩm và tổng tiền giỏ hàng
+                    var cartItem = $(`.cart-item[data-id="${id_sanpham}"]`);
+                    cartItem.find('.item-quantity').text(newVal);
+                    cartItem.find('.item-price').text(json.total_sp);
+
+                    $('#cart-total').text(json.total_cart);
+                    $('#cart_total_down').text(json.total_cart);
+                } else {
+                    showModal('Lỗi khi cập nhật giỏ hàng!');
+                }
+            },
+            error: function () {
+                showModal('Lỗi khi cập nhật giỏ hàng!');
+            }
+        });
     });
 
 })(jQuery);

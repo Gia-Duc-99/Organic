@@ -39,7 +39,12 @@
             width: 300px;
             /* Chiều rộng */
             display: none;
+
             /* Ẩn giỏ hàng theo mặc định */
+            .modal-backdrop.show {
+                opacity: 0.5;
+                /* Mờ nền khi modal mở */
+            }
         }
     </style>
 </head>
@@ -49,7 +54,25 @@
     <div id="preloder">
         <div class="loader"></div>
     </div>
-
+    <!-- Modal -->
+    <div id="success-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thông báo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Humberger Begin -->
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
@@ -79,13 +102,10 @@
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
-                <li class="active"><a href="">Home</a></li>
+                <li class="active"><a href="/trangchu">Home</a></li>
                 <li><a href="./shop-grid.html">Shop</a>
                     <ul class="header__menu__dropdown">
                         <li><a href="./shop-details.html">Shop Details</a></li>
-                        <li><a href="/trangchu/giohang">Shoping Cart</a></li>
-                        <li><a href="./checkout.html">Check Out</a></li>
-                        <li><a href="./blog-details.html">Blog Details</a></li>
                     </ul>
                 </li>
                 <li><a href="/trangchu/giohang">Shoping Cart</a></li>
@@ -157,7 +177,7 @@
                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
-                            <li class="active"><a href="./index.html">Home</a></li>
+                            <li class="active"><a href="/trangchu">Home</a></li>
                             <li><a href="./shop-grid.html">Shop</a>
                                 <ul class="header__menu__dropdown">
                                     <li><a href="./shop-details.html">Shop Details</a></li>
@@ -174,9 +194,11 @@
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
                             <li>
-                                <a href="#" id="cart-icon" onclick="toggleCart()"><i class="fa fa-shopping-bag"
-                                        aria-labelledby="dropdownCart"></i><span
-                                        th:text="${session.SoSanPhamTrongGioHang != null ? session.SoSanPhamTrongGioHang : 0}">0</span></a>
+                                <a href="#" id="cart-icon" onclick="toggleCart()">
+                                    <i class="fa fa-shopping-bag"></i>
+                                    <span id="cart-total"
+                                        th:text="${session.SoSanPhamTrongGioHang != null ? session.SoSanPhamTrongGioHang : 0}">0</span>
+                                </a>
                                 <div id="cart-dropdown" style="display:none;" class="cart-dropdown">
                                     <!-- Nội dung giỏ hàng sẽ được tải vào đây -->
                                     <div id="cart-content">Loading...</div>
@@ -324,36 +346,6 @@
     <script src="/client/js/owl.carousel.min.js"></script>
     <script src="/client/js/main.js"></script>
     <script src="/client/js/cart.js"></script>
-    <script>
-        function toggleCart() {
-            var cartDropdown = document.getElementById('cart-dropdown');
-            if (cartDropdown.style.display === 'none' || cartDropdown.style.display === '') {
-                cartDropdown.style.display = 'block';
-                loadCartContent();
-            } else {
-                cartDropdown.style.display = 'none';
-            }
-        }
-
-        function loadCartContent() {
-            var cartContent = document.getElementById('cart-content');
-            fetch('/giohang/ajax/get-html')
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text); });
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    cartContent.innerHTML = data;
-                })
-                .catch(error => {
-                    cartContent.innerHTML = 'Error loading cart content: ' + error.message;
-                    console.error('Error:', error);
-                });
-        }
-
-    </script>
 
 </body>
 

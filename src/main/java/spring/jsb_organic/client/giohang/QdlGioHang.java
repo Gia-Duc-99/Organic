@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import spring.jsb_organic.admin.chitietdonhang.DvlCHiTietDH;
+import spring.jsb_organic.admin.donhang.DonHang;
 import spring.jsb_organic.admin.donhang.DvlDonHang;
 import spring.jsb_organic.admin.khachhang.DvlKhachHang;
 import spring.jsb_organic.admin.sanpham.DvlSanPham;
@@ -127,37 +128,43 @@ public class QdlGioHang {
 
     @GetMapping("/giohang/ajax/get-html")
     public String getGioHangAjax(Model model) {
-        if (!gioHangCoSanPham())
-            return "trangchu/giohang-trong.html";
-            
-        @SuppressWarnings("unchecked")
-        Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
+        try {
+            if (!gioHangCoSanPham())
+                return "client/giohang/giohang-trong.html";
 
-        List<Map<String, String>> cartData = new ArrayList<Map<String, String>>();
+            @SuppressWarnings("unchecked")
+            Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
 
-        for (Integer maSanPham : cartMap.keySet()) {
-            SanPham sp = dvlSanPham.xemSP(maSanPham);
-            var donGiaStr = String.valueOf(sp.getDonGia());
-            float thanhTien = cartMap.get(maSanPham) * sp.getDonGia();
+            List<Map<String, String>> cartData = new ArrayList<Map<String, String>>();
 
-            Map<String, String> map = new HashMap<>();
-            map.put("id", String.valueOf(sp.getId()));
-            map.put("ten", sp.getTenSP());
-            map.put("donGia", donGiaStr);
+            for (Integer maSanPham : cartMap.keySet()) {
+                SanPham sp = dvlSanPham.xemSP(maSanPham);
+                var donGiaStr = String.valueOf(sp.getDonGia());
+                float thanhTien = cartMap.get(maSanPham) * sp.getDonGia();
 
-            map.put("donGiaVi", String.format("%,.0f", sp.getDonGia()));
-            map.put("anh", sp.getAnh());
-            map.put("soluong", String.valueOf(cartMap.get(maSanPham)));
-            map.put("thanhTien", String.format("%,.0f", thanhTien));
+                Map<String, String> map = new HashMap<>();
+                map.put("id", String.valueOf(sp.getId()));
+                map.put("ten", sp.getTenSP());
+                map.put("donGia", donGiaStr);
 
-            cartData.add(map);
+                map.put("donGiaVi", String.format("%,.0f", sp.getDonGia()));
+                map.put("anh", sp.getAnh());
+                map.put("soluong", String.valueOf(cartMap.get(maSanPham)));
+                map.put("thanhTien", String.format("%,.0f", thanhTien));
+
+                cartData.add(map);
+            }
+
+            // Gửi dữ liệu giỏ hàng sang bên View
+            model.addAttribute("cartData", cartData);
+            model.addAttribute("tongGiaTriGioHang", tongGiaTriGioHang());
+            model.addAttribute("tongGiaTriGioHangVi", tongGiaTriGioHangVi());
+            return "client/giohang/giohang-ajax.html";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error/500"; // Return an error page
         }
-
-        // Gửi dữ liệu giỏ hàng sang bên View
-        model.addAttribute("cartData", cartData);
-        model.addAttribute("tongGiaTriGioHang", tongGiaTriGioHang());
-        model.addAttribute("tongGiaTriGioHangVi", tongGiaTriGioHangVi());
-        return "trangchu/giohang-ajax.html";
 
     }
 
@@ -204,7 +211,7 @@ public class QdlGioHang {
     }
 
     @PostMapping(path = "/giohang/sua/ajax", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> postGioHangSuaAjax(Model model,
+    public ResponseEntity<Map<String, Object>> postGioHangSuaAjax(
             @RequestParam("id_sanpham") int id,
             @RequestParam("so_luong") int soluong,
             @RequestParam("ten") String ten) {
@@ -216,24 +223,20 @@ public class QdlGioHang {
 
         @SuppressWarnings("unchecked")
         Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
-        Integer cartQuantity = (Integer) session.getAttribute("SoSanPhamTrongGioHang");
 
-        if (cartMap.containsKey(id)) {
-            int so_luong_cu = cartMap.get(id);
-            cartMap.put(id, soluong);
-            cartQuantity += (soluong - so_luong_cu);
-        }
-        session.setAttribute("SoSanPhamTrongGioHang", cartQuantity);
-
-        // Cập nhật giỏ hàng trong Session
+        // Cập nhật số lượng sản phẩm trong giỏ hàng
+        cartMap.put(id, soluong);
         session.setAttribute("cart", cartMap);
-        session.setAttribute("SoSanPhamTrongGioHang", cartQuantity);
 
-        System.out.println("Đã cập nhật giỏ hàng với sản phẩm id: " + id);
+        SanPham sp = dvlSanPham.xemSP(id);
+        float thanhTien = soluong * sp.getDonGia();
+        float totalCart = tongGiaTriGioHang();
 
-        // Gửi dữ liệu json trở lại cho View
         Map<String, Object> data = new HashMap<>();
-        data.put("success", "Đã cập nhật giỏ hàng, số lượng mới cho sản phẩm " + ten);
+        data.put("success", true); // Dùng kiểu boolean để dễ xử lý
+        data.put("donGiaVi", sp.getDonGia()); // Đơn giá của sản phẩm
+        data.put("total_sp", String.format("%,.0f", thanhTien)); // Tổng tiền của sản phẩm
+        data.put("total_cart", String.format("%,.0f", totalCart)); // Tổng tiền của giỏ hàng
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -268,5 +271,54 @@ public class QdlGioHang {
         data.put("success", "Đã xóa thành công khỏi giỏ hàng sản phẩm " + ten);
 
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/giohang/thanhtoan")
+    public String getGioHangThanhToan(Model model) {
+        if (!gioHangCoSanPham()) {
+            model.addAttribute("content", "trangchu/giohang-trong.html");
+
+            return "layout/layout-client.html";
+        }
+
+        // Kiểm tra xem, khách hàng là vãng lai(anonymous), hay thành viên (membership)
+        int maKhachHang = 0; // vãng lai
+        var dh = new DonHang();
+
+        @SuppressWarnings("unchecked")
+        Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
+
+        List<Map<String, String>> cartData = new ArrayList<Map<String, String>>();
+
+        for (Integer maSanPham : cartMap.keySet()) {
+
+            SanPham sp = dvlSanPham.xemSP(maSanPham);
+            var donGiaStr = String.valueOf(sp.getDonGia());
+            float thanhTien = cartMap.get(maSanPham) * sp.getDonGia();
+
+            Map<String, String> map = new HashMap<>();
+            map.put("id", String.valueOf(sp.getId()));
+            map.put("ten", sp.getTenSP());
+            map.put("donGia", donGiaStr);
+
+            map.put("donGiaVi", String.format("%,.2f", sp.getDonGia()));
+            map.put("anh", sp.getAnh());
+            map.put("soluong", String.valueOf(cartMap.get(maSanPham)));
+            map.put("thanhTien", String.format("%,.0f", thanhTien));
+
+            cartData.add(map);
+        }
+
+        // Gửi dữ liệu giỏ hàng sang bên View
+        model.addAttribute("cartData", cartData);
+        model.addAttribute("tongGiaTriGioHang", tongGiaTriGioHang());
+        model.addAttribute("tongGiaTriGioHangVi", tongGiaTriGioHangVi());
+
+        model.addAttribute("dl", dh); // gửi dữ liệu khách hàng sang
+        model.addAttribute("maKhachHang", maKhachHang); // gửi dữ liệu khách hàng sang
+        model.addAttribute("content", "/client/giohang/thanhtoan.html");
+
+        return "layout/layout-client.html";
+
     }
 }
