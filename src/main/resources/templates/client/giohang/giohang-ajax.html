@@ -1,0 +1,34 @@
+<table class="table">
+    <thead>
+        <tr>
+            <td>Tên</td>
+            <td>Ảnh</td>
+            <td>SL</td>
+            <td>Thành Tiền</td>
+        </tr>
+    </thead>
+    <tbody th:each="sp:${cartData}">
+        <tr>
+            <td th:text="${sp.get('ten')}">tên</td>
+            <td>
+                <img th:src="${sp.get('anh')}" style="width: 70px;height: 70px;">
+            </td>
+            <td th:text="${'x'+sp.get('soluong')}">số lượng</td>
+            <!-- <td th:text="${#numbers.formatDecimal(sp.get('donGia'), 0, 0)}">giá tiền</td> -->
+            <td th:text="${sp.get('thanhTien')}">thành tiền</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Tổng Tiền:</td>
+            <td th:text="${tongGiaTriGioHangVi}" colspan="2">Tổng Tiền:</td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href="/trangchu/giohang">
+                    <i class="fa fa-shopping-cart"></i>Xem Giỏ Hàng</a>
+            </td>
+            <td colspan="2"><a href="/giohang/thanhtoan">
+                    <i class="fa fa-credit-card"></i>Thanh Toán</a></td>
+        </tr>
+    </tfoot>
+</table>

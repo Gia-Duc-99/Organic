@@ -1,0 +1,116 @@
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Quản Lý Nhân Viên</h1>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <button type="button" data-toggle="modal" class="btn btn-primary" data-target="#showModal">Thêm Mới</button>
+    </div>
+    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body" id="modalContent">
+                    <!-- Nội dung form sẽ được chèn vào đây -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="modalActionBtn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên Đầy Đủ</th>
+                        <th>Email</th>
+                        <th>Trạng Thái</th>
+                        <th>Điện Thoại</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên Đầy Đủ</th>
+                        <th>Email</th>
+                        <th>Trạng Thái</th>
+                        <th>Điện Thoại</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
+                        <td>
+                            <img th:src="${dl.anhDaiDien}" style="height: 80px" />
+                        </td>
+                        <td th:text="${dl.tenDayDu}"></td>
+                        <td th:text="${dl.email}"></td>
+                        <td>
+                            <div th:if="${dl.trangThai}">
+                                <span class="text-success" th:text="${dl.TrangThaiVi}"></span>
+                            </div>
+                            <div th:unless="${dl.trangThai}">
+                                <span class="text-danger" th:text="${dl.getTrangThaiVi()}"></span>
+                            </div>
+                        </td>
+                        <td th:text="${dl.dienThoai}"></td>
+                        <td>
+                            <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
+                                <i class="bi bi-eye"></i>Xem
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-outline-warning" th:onclick="'showEditModal(' + ${dl.Id} + ')'">
+                                <i class="bi bi-pencil-fill"></i>Sửa
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-outline-danger" th:onclick="'showDeleteModal(' + ${dl.Id} + ')'">
+                                <i class="bi bi-trash"></i>Xoá
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="formThemContainer" style="display: none;">
+    <div th:replace="/admin/nhanvien/them.html"></div>
+</div>
+<div id="formXemContainer" style="display: none;">
+    <div th:replace="/admin/nhanvien/xem.html"></div>
+</div>
+<div id="formSuaContainer" style="display: none;">
+    <div th:replace="/admin/nhanvien/sua.html"></div>
+</div>
+
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<script>
+    window.showViewModal = function (id) {
+        showModal('/admin/nhanvien/xem?id=' + id, 'Xem Chi Tiết', '', null);
+    }
+    window.showEditModal = function (id) {
+        showModal('/admin/nhanvien/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
+            document.querySelector('#showModal form').submit();
+        });
+    }
+    window.showDeleteModal = function (id) {
+        document.getElementById('modalContent').innerHTML = `
+        <h5>Xác nhận xóa</h5>
+        <p>Bạn có chắc chắn muốn xóa mục này không?</p> `;
+        document.getElementById('modalActionBtn').innerText = 'Xóa';
+        document.getElementById('modalActionBtn').onclick = function () {
+            var deleteUrl = '/admin/nhanvien/xoa?id=' + id;
+            window.location.href = deleteUrl;
+        };
+        $('#showModal').modal('show');
+    }
+</script>
