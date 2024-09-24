@@ -139,7 +139,7 @@ public class QdlNhanVien {
 
         var uriBeforeLogin = (String) session.getAttribute("URI_BEFORE_LOGIN");
         if (uriBeforeLogin == null)
-            uriBeforeLogin = "/admin/nhanvien";
+            uriBeforeLogin = "/admin/trangchu";
         return "redirect:" + uriBeforeLogin;
     }
 

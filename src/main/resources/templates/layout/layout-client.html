@@ -97,7 +97,13 @@
                 </ul>
             </div>
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Đăng Nhập</a>
+                <a href="/trangchu/dangnhap"><i class="fa fa-user"><span th:if="${session.KhachHang_Ten != null}">
+                            <span th:text="${session.KhachHang_Ten}"></span>
+                            <!-- Hiển thị tên khách hàng -->
+                        </span>
+                        <span th:if="${session.KhachHang_Ten == null}">
+                            Đăng Nhập
+                        </span></i></a>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
@@ -160,7 +166,20 @@
                                 </ul>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="#"><i class="fa fa-user"></i> Đăng Nhập</a>
+                                <a href="/trangchu/dangnhap"><i class="fa fa-user">
+                                        <span th:if="${session.KhachHang_Ten != null}">
+                                            <span th:text="${session.KhachHang_Ten}"></span>
+                                            <!-- Hiển thị tên khách hàng -->
+                                        </span>
+                                        <span th:if="${session.KhachHang_Ten == null}">
+                                            Đăng Nhập
+                                        </span>
+                                    </i></a>
+                                <a href="/trangchu/dangxuat"><i class="fa fa-sign-out"></i>
+                                    <span>
+                                        Đăng Xuất
+                                    </span>
+                                    </i></a>
                             </div>
                         </div>
                     </div>
@@ -197,7 +216,7 @@
                                 <a href="#" id="cart-icon" onclick="toggleCart()">
                                     <i class="fa fa-shopping-bag"></i>
                                     <span id="cart-total"
-                                        th:text="${session.SoSanPhamTrongGioHang != null ? session.SoSanPhamTrongGioHang : 0}">0</span>
+                                        th:text="${session.SoSanPhamTrongGioHang != null ? session.SoSanPhamTrongGioHang : 0}"></span>
                                 </a>
                                 <div id="cart-dropdown" style="display:none;" class="cart-dropdown">
                                     <!-- Nội dung giỏ hàng sẽ được tải vào đây -->
@@ -205,7 +224,9 @@
                                 </div>
                             </li>
                         </ul>
-                        <div class="header__cart__price">item: <span>$150.00</span></div>
+                        <div class="header__cart__price">item: <span id="cart_total_price"
+                                th:text="${session.TongGiaTriGioHangVi != null ? session.TongGiaTriGioHangVi + ' đ' : '0 đ'}"></span>
+                        </div>
                     </div>
                 </div>
             </div>

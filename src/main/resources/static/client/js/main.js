@@ -204,48 +204,55 @@
     var proQty = $('.pro-qty');
     proQty.prepend('<span class="dec qtybtn">-</span>');
     proQty.append('<span class="inc qtybtn">+</span>');
+
+    // Sự kiện click cho các nút tăng/giảm
     proQty.on('click', '.qtybtn', function () {
         var $button = $(this);
-        var inputField = $button.parent().find('input');
+        var inputField = $button.parent().find('input'); // Trường input chứa số lượng sản phẩm
         var oldValue = parseFloat(inputField.val());
-        var id_sanpham = inputField.attr('id').split('_')[2];  // Lấy ID sản phẩm từ input
-        var ten_sanpham = $button.closest('tr').find('h5').text(); // Lấy tên sản phẩm
+        var id_sanpham = inputField.attr('id').split('_')[2];  // Lấy ID sản phẩm từ input, ví dụ: soluong_sp_1
+        var ten = $button.closest('tr').find('h5').text();
+        var donGia = parseFloat($button.closest('tr').find('.shoping__cart__price').text().replace(/[^\d]/g, '')); // Lấy đơn giá sản phẩm
         var newVal;
 
+        // Kiểm tra nếu là nút tăng
         if ($button.hasClass('inc')) {
-            newVal = oldValue + 1;  // Tăng số lượng
+            newVal = oldValue + 1, 99;  // Tăng số lượng, Giới hạn số lượng tối đa là 99
         } else {
-            newVal = oldValue > 1 ? oldValue - 1 : 1;  // Giảm số lượng nhưng không dưới 1
+            // Kiểm tra để không giảm dưới 1
+            newVal = Math.max(oldValue - 1, 1);  // Giảm số lượng nhưng không dưới 1
         }
-
         // Cập nhật số lượng trong ô input
         inputField.val(newVal);
+
+        // Gửi yêu cầu AJAX để cập nhật số lượng trên server
         $.ajax({
-            url: '/giohang/sua/ajax',  // Đường dẫn API cập nhật giỏ hàng
+            url: '/giohang/sua/ajax',
             type: 'post',
             data: {
                 id_sanpham: id_sanpham,
-                ten: ten_sanpham,
+                ten: ten,
                 so_luong: newVal
             },
             dataType: 'json',
             success: function (json) {
                 if (json.success) {
-                    // Cập nhật tổng tiền của sản phẩm và tổng tiền giỏ hàng
-                    var cartItem = $(`.cart-item[data-id="${id_sanpham}"]`);
-                    cartItem.find('.item-quantity').text(newVal);
-                    cartItem.find('.item-price').text(json.total_sp);
+                    // Cập nhật lại thành tiền nếu server có giá khác
+                    var totalCell = $button.closest('tr').find('.shoping__cart__total');
+                    var updatedTotalPrice = newVal * parseFloat(json.donGiaVi); // Sử dụng giá mới từ server
+                    totalCell.text(updatedTotalPrice.toLocaleString() + ' đ');
 
-                    $('#cart-total').text(json.total_cart);
-                    $('#cart_total_down').text(json.total_cart);
+                    $('#cart-total').text(json.total_quantity);  // Số lượng tổng từ server
+                    $('#cart_total_price').text(json.totalCartVi + ' đ');
                 } else {
+                    // Nếu có lỗi xảy ra, hiển thị thông báo
                     showModal('Lỗi khi cập nhật giỏ hàng!');
                 }
             },
             error: function () {
+                // Nếu có lỗi trong quá trình gửi AJAX, hiển thị thông báo
                 showModal('Lỗi khi cập nhật giỏ hàng!');
             }
         });
     });
-
 })(jQuery);

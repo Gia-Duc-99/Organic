@@ -44,15 +44,16 @@
                                 <td class="shoping__cart__quantity">
                                     <div class="quantity">
                                         <div class="pro-qty" data-th="Quantity">
-                                            <input type="text" value="1" th:value="${sp.get('soluong')}" th:id="'soluong_sp_'+${sp.get('id')}">
+                                            <input type="text" th:value="${sp.get('soluong')}"
+                                                th:id="'soluong_sp_'+${sp.get('id')}">
                                         </div>
                                     </div>
                                 </td>
-                                <td class="shoping__cart__total" data-th="Subtotal" id="total_sp_${sp.get('id')}">
+                                <td class="shoping__cart__total" data-id="${sp.id}" id="total_sp">
                                     [[${sp.get('thanhTien')}]] đ
                                 </td>
                                 <td class="shoping__cart__item__close">
-                                    <span class="icon_close"></span>
+                                    <span class="icon_close" th:onclick="cart.remove([[${sp.get('id')}]], [[${sp.get('ten')}]])"></span>
                                 </td>
                             </tr>
                         </tbody>
@@ -63,17 +64,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
-                    <a href="/trangchu" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
-                        Update Cart</a>
+                    <a href="/trangchu" class="primary-btn cart-btn">Tiếp Tục Mua Hàng</a>
+                    <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_close"></span>
+                        Xóa Toàn Bộ Sản Phẩm</a>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="shoping__continue">
                     <div class="shoping__discount">
-                        <h5>Discount Codes</h5>
+                        <h5>Mã Giảm Giá</h5>
                         <form action="#">
-                            <input type="text" placeholder="Enter your coupon code">
+                            <input type="text" placeholder="Nhập mã giảm giá của bạn">
                             <button type="submit" class="site-btn">APPLY COUPON</button>
                         </form>
                     </div>
@@ -81,12 +82,14 @@
             </div>
             <div class="col-lg-6">
                 <div class="shoping__checkout">
-                    <h5>Cart Total</h5>
+                    <h5>Tổng Giỏ Hàng</h5>
                     <ul>
-                        <li>Subtotal <span>$454.98</span></li>
-                        <li>Total <span>$454.98</span></li>
+                        <li>Tổng tiền<span th:text="${session.TongGiaTriGioHangVi + ' đ'}"></span></li>
+                        <li>Phí ship (Km)<span>$30.98</span></li>
+                        <li>Mã khuyến mãi<span>$454.98</span></li>
+                        <li>Tổng tiền <span>$454.98</span></li>
                     </ul>
-                    <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    <a href="/trangchu/giohang/thanhtoan" class="primary-btn">TIẾN HÀNH THANH TOÁN</a>
                 </div>
             </div>
         </div>

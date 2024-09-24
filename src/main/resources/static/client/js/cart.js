@@ -13,14 +13,13 @@ var cart = {
 				if (json.success) {
 					// Cập nhật tổng sản phẩm và tổng tiền
 					$('#cart-total').text(json.total);
-					$('#cart_total_down').text(json.total);
-
+					$('#cart_total_price').text(json.totalCartVi + ' đ');
 					// Cập nhật sản phẩm trong danh sách (chỉ thêm mục mới)
 					var cartItem = `<div class="cart-item" data-id="${id_sanpham}">
-										<span class="item-name">${ten}</span>
-										<span class="item-quantity">${soluong}</span>
-										<span class="item-price">${json.price}</span>
-									</div>`;
+                                        <span class="item-name">${ten}</span>
+                                        <span class="item-quantity">${soluong}</span>
+                                        <span class="item-price">${json.price}</span>
+                                    </div>`;
 					$('#cart-items').append(cartItem);
 
 					showModal('Đã thêm thành công sản phẩm vào giỏ hàng');
@@ -39,27 +38,16 @@ var cart = {
 			data: {
 				id_sanpham: id_sanpham,
 				ten: ten,
-				so_luong: parseInt(so_luong) + 1
+				so_luong: parseInt(so_luong)
 			},
 			dataType: 'json',
 			success: function (json) {
 				if (json.success) {
-					// Cập nhật số lượng mới
-					var newQuantity = parseInt(so_luong) + 1;
 
-					// Cập nhật thành tiền mới
-					var newTotal = newQuantity * parseFloat(json.donGiaVi); // donGiaVi là đơn giá từ phản hồi
-
-					// Cập nhật giao diện
-					var cartItem = $(`.cart-item[data-id="${id_sanpham}"]`);
-					cartItem.find('.item-quantity').text(newQuantity);
-					cartItem.find('.item-price').text(newTotal.toFixed(0)); // Định dạng số tiền
-
-					// Cập nhật tổng số tiền của giỏ hàng
-					$('#cart-total').text(json.total_cart);
-					$('#cart_total_down').text(json.total_cart);
-
-					showModal('Cập nhật số lượng sản phẩm thành công!');
+					var updatedTotalPrice = so_luong * parseFloat(json.donGiaVi);
+					$('#total_sp_' + id_sanpham).text(updatedTotalPrice.toLocaleString() + ' đ');
+					$('#cart-total').text(json.total_quantity);
+					$('#cart_total_price').text(json.totalCartVi + ' đ');
 				} else {
 					showModal('Lỗi khi cập nhật giỏ hàng!');
 				}
@@ -69,6 +57,7 @@ var cart = {
 			}
 		});
 	},
+
 	remove: function (id_sanpham, ten) {
 		$.ajax({
 			url: '/giohang/xoa/ajax',
@@ -79,21 +68,20 @@ var cart = {
 			},
 			dataType: 'json',
 			success: function (json) {
-				// Cập nhật tổng số lượng và tổng tiền
 				$('#cart-total').text(json.total);
-				$('#cart_total_down').text(json.total);
-
-				// Xóa sản phẩm khỏi danh sách
-				$(`.cart-item[data-id="${id_sanpham}"]`).remove();
-
+				$('#cart_total_price').text(json.totalCartVi + ' đ');
 				showModal('Sản phẩm đã được xóa khỏi giỏ hàng!');
+
+				$('#success-modal').on('hidden.bs.modal', function () {
+					location.reload(); // Tải lại trang khi modal đóng
+				});
 			},
 			error: function () {
 				alert('Lỗi khi xóa sản phẩm khỏi giỏ hàng!');
 			}
 		});
 	}
-}
+};
 //1 số js bổ sung
 function showModal(message) {
 	$('#modal-message').text(message);

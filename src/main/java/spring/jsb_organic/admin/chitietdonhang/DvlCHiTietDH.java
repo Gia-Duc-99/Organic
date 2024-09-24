@@ -14,8 +14,8 @@ public class DvlCHiTietDH {
         return kdl.findAll();
     }
 
-    public List<ChiTietDH> duyetCTDH() {
-        return kdl.findAll();
+    public List<ChiTietDH> timTheoDonHang(int maDonHang) {
+        return kdl.findByDonHangId(maDonHang);
     }
 
     public ChiTietDH timDH(int id) {

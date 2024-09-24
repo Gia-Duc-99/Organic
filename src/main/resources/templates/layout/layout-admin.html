@@ -79,7 +79,6 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="/admin/donhang">Đơn Hàng</a>
-                        <a class="collapse-item" href="/admin/chitetdh">Chi Tiết Đơn Hàng</a>
                         <a class="collapse-item" href="/admin/khachhang">Danh Sách KH</a>
                         <a class="collapse-item" href="/admin/phanhoi">Phản Hồi</a>
                     </div>
@@ -206,7 +205,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
+                                <span class="badge badge-danger badge-counter">1</span>
                             </a>
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -265,6 +264,23 @@
                     <div th:if="${THONG_BAO_OK}" class="alert alert-success" role="alert" th:text="${THONG_BAO_OK}">
                     </div>
                     <div th:if="${THONG_BAO_LOI}" class="alert alert-danger" role="alert" th:text="${THONG_BAO_LOI}">
+                    </div>
+                    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+
+                                <div class="modal-body" id="modalContent">
+                                    <!-- Nội dung form sẽ được chèn vào đây -->
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                    <button type="button" class="btn btn-primary" id="modalActionBtn">Thêm</button>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                     <!-- Page Heading -->
                     <i th:replace="~{${content}}"></i>
@@ -331,7 +347,12 @@
 
     <!-- Page level custom scripts -->
     <script src="/admin/js/demo/datatables-demo.js"></script>
-    
+
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+
 </body>
 
 </html>

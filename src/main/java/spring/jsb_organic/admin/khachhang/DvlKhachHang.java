@@ -56,4 +56,17 @@ public class DvlKhachHang {
         this.kdl.deleteById(id);
     }
 
+    public KhachHang timKHTheoTenDangNhap(String tdn) {
+
+        KhachHang dl = null;
+
+        dl = kdl.findOneByTenDangNhap(tdn);
+
+        return dl;
+    }
+
+    public Boolean tonTaiTenDangNhap(String tdn) {
+        return kdl.existsByTenDangNhap(tdn);
+    }
+
 }

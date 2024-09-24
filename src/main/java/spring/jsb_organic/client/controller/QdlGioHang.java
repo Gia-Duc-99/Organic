@@ -1,4 +1,4 @@
-package spring.jsb_organic.client.giohang;
+package spring.jsb_organic.client.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import spring.jsb_organic.admin.chitietdonhang.ChiTietDH;
 import spring.jsb_organic.admin.chitietdonhang.DvlCHiTietDH;
 import spring.jsb_organic.admin.donhang.DonHang;
 import spring.jsb_organic.admin.donhang.DvlDonHang;
 import spring.jsb_organic.admin.khachhang.DvlKhachHang;
+import spring.jsb_organic.admin.khachhang.KhachHang;
 import spring.jsb_organic.admin.sanpham.DvlSanPham;
 import spring.jsb_organic.admin.sanpham.SanPham;
 
@@ -47,51 +50,58 @@ public class QdlGioHang {
     @Autowired
     private DvlKhachHang dvlKhachHang;
 
+    private void capNhatThongTinGioHang() {
+        @SuppressWarnings("unchecked")
+        Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
+
+        if (cartMap == null || cartMap.isEmpty()) {
+            session.setAttribute("SoSanPhamTrongGioHang", 0);
+            session.setAttribute("TongGiaTriGioHangVi", 0);
+            return;
+        }
+
+        int tongSoLuong = 0;
+        float tongGiaTri = 0;
+
+        for (Map.Entry<Integer, Integer> entry : cartMap.entrySet()) {
+            SanPham sp = dvlSanPham.xemSP(entry.getKey());
+            tongSoLuong += entry.getValue();
+            tongGiaTri += sp.getDonGia() * entry.getValue();
+        }
+
+        session.setAttribute("SoSanPhamTrongGioHang", tongSoLuong);
+        session.setAttribute("TongGiaTriGioHangVi", String.format("%,.0f", tongGiaTri));
+    }
+
     @PostMapping(path = "/giohang/them/ajax", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> postGioHangThemMoi(
             @RequestParam("id_sanpham") int id,
             @RequestParam("soluong") int soluong,
             @RequestParam("ten") String ten) {
+
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new HashMap<Integer, Integer>());
-            session.setAttribute("SoSanPhamTrongGioHang", 0);
         }
-
+        System.out.println("TongGiaTriGioHangVi: " + session.getAttribute("TongGiaTriGioHangVi"));
         @SuppressWarnings("unchecked")
         Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
-        Integer cartQuantity = (Integer) session.getAttribute("SoSanPhamTrongGioHang");
 
-        if (cartMap.containsKey(id)) {
-            cartMap.put(id, cartMap.get(id) + soluong);
-        } else {
-            cartMap.put(id, soluong);
-        }
-        cartQuantity += soluong;
-
+        // Cập nhật giỏ hàng
+        cartMap.put(id, cartMap.getOrDefault(id, 0) + soluong);
         session.setAttribute("cart", cartMap);
-        session.setAttribute("SoSanPhamTrongGioHang", cartQuantity);
 
+        // Cập nhật lại số lượng và tổng giá trị giỏ hàng
+        capNhatThongTinGioHang();
+
+        SanPham sp = dvlSanPham.xemSP(id);
         Map<String, Object> data = new HashMap<>();
-        data.put("success", "Đã thêm thành công vào giỏ hàng sản phẩm " + ten);
-        data.put("total", cartQuantity);
-        data.put("total", demSPTrongGioHang());
+        data.put("success", true);
+        data.put("total", session.getAttribute("SoSanPhamTrongGioHang"));
+        data.put("price", sp.getDonGia());
+        data.put("totalCart", session.getAttribute("TongGiaTriGioHang"));
+        data.put("totalCartVi", tongGiaTriGioHangVi());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
-    }
-
-    private int demSPTrongGioHang() {
-        @SuppressWarnings("unchecked")
-        Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
-
-        if (cartMap == null || cartMap.isEmpty())
-            return 0;
-
-        int tongSoSanPham = 0;
-        for (Integer maSanPham : cartMap.keySet()) {
-            tongSoSanPham += cartMap.get(maSanPham);
-        }
-
-        return tongSoSanPham;
     }
 
     private boolean gioHangCoSanPham() {
@@ -171,7 +181,7 @@ public class QdlGioHang {
     @GetMapping("/trangchu/giohang")
     public String getGioHangChiTiet(Model model) {
         if (!gioHangCoSanPham()) {
-            model.addAttribute("content", "client/giohang/giohang-chitiet.html");
+            model.addAttribute("content", "client/giohang/giohang-trong.html");
 
             return "layout/layout-client.html";
         }
@@ -218,62 +228,64 @@ public class QdlGioHang {
 
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new HashMap<Integer, Integer>());
-            session.setAttribute("SoSanPhamTrongGioHang", 0);
         }
 
         @SuppressWarnings("unchecked")
         Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
 
         // Cập nhật số lượng sản phẩm trong giỏ hàng
-        cartMap.put(id, soluong);
+        if (soluong > 0) {
+            cartMap.put(id, soluong);
+        } else {
+            cartMap.remove(id);
+        }
         session.setAttribute("cart", cartMap);
+
+        // Cập nhật lại thông tin giỏ hàng
+        capNhatThongTinGioHang();
 
         SanPham sp = dvlSanPham.xemSP(id);
         float thanhTien = soluong * sp.getDonGia();
-        float totalCart = tongGiaTriGioHang();
 
         Map<String, Object> data = new HashMap<>();
-        data.put("success", true); // Dùng kiểu boolean để dễ xử lý
-        data.put("donGiaVi", sp.getDonGia()); // Đơn giá của sản phẩm
-        data.put("total_sp", String.format("%,.0f", thanhTien)); // Tổng tiền của sản phẩm
-        data.put("total_cart", String.format("%,.0f", totalCart)); // Tổng tiền của giỏ hàng
+        data.put("success", true);
+        data.put("donGiaVi", sp.getDonGia());
+        data.put("total_sp", String.format("%,.0f", thanhTien));
+        data.put("total_quantity", session.getAttribute("SoSanPhamTrongGioHang"));
+        data.put("totalCartVi", tongGiaTriGioHangVi());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @PostMapping(path = "/giohang/xoa/ajax", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> postGioHangXoaAjax(Model model,
-            @RequestParam("id_sanpham") int id,
-            @RequestParam("ten") String ten) {
+    public ResponseEntity<Map<String, Object>> postGioHangXoaAjax(
+            @RequestParam("id_sanpham") int id) {
 
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new HashMap<Integer, Integer>());
-            session.setAttribute("SoSanPhamTrongGioHang", 0);
         }
 
         @SuppressWarnings("unchecked")
         Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
-        Integer cartQuantity = (Integer) session.getAttribute("SoSanPhamTrongGioHang");
 
         if (cartMap.containsKey(id)) {
-            int so_luong_cu = cartMap.get(id);
             cartMap.remove(id);
-            cartQuantity -= so_luong_cu;
         }
-
         session.setAttribute("cart", cartMap);
-        session.setAttribute("SoSanPhamTrongGioHang", cartQuantity);
 
-        System.out.println("Đã xóa bỏ giỏ hàng sản phẩm id: " + id);
+        // Cập nhật lại thông tin giỏ hàng
+        capNhatThongTinGioHang();
 
-        // Gửi dữ liệu json trở lại cho View
         Map<String, Object> data = new HashMap<>();
-        data.put("success", "Đã xóa thành công khỏi giỏ hàng sản phẩm " + ten);
+        data.put("success", true);
+        data.put("total", session.getAttribute("SoSanPhamTrongGioHang"));
+        data.put("totalCart", session.getAttribute("TongGiaTriGioHang"));
+        data.put("totalCartVi", tongGiaTriGioHangVi());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @GetMapping("/giohang/thanhtoan")
+    @GetMapping("/trangchu/giohang/thanhtoan")
     public String getGioHangThanhToan(Model model) {
         if (!gioHangCoSanPham()) {
             model.addAttribute("content", "trangchu/giohang-trong.html");
@@ -321,4 +333,79 @@ public class QdlGioHang {
         return "layout/layout-client.html";
 
     }
+
+    @PostMapping("/trangchu/giohang/thanhtoan/thanhcong")
+    public String xuLyDonHangThanhToan(@RequestParam("email") String email,
+            @RequestParam("dienThoai") String dienThoai,
+            @RequestParam("tenDayDu") String tenDayDu,
+            @RequestParam("diaChi") String diaChi,
+            @RequestParam("ghiChu") String ghiChu,
+            Model model) {
+        try {
+            // Lấy giỏ hàng từ session
+            @SuppressWarnings("unchecked")
+            Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
+            if (cartMap == null || cartMap.isEmpty()) {
+                return "redirect:/trangchu/giohang"; // Nếu giỏ hàng trống, chuyển về giỏ hàng
+            }
+
+            // Tạo đơn hàng mới
+            DonHang donHang = new DonHang();
+            donHang.setNgayTao(LocalDate.now()); // Ngày tạo đơn hàng
+
+            // Kiểm tra xem khách hàng đã đăng nhập hay chưa
+            Integer maKhachHang = (Integer) session.getAttribute("maKhachHang");
+            if (maKhachHang != null) {
+                // Khách hàng là thành viên
+                KhachHang khachHang = dvlKhachHang.xemKH(maKhachHang); // Lấy thông tin khách hàng từ database
+                donHang.setKhachHang(khachHang); // Gán đối tượng khách hàng vào đơn hàng
+            } else {
+                // Khách vãng lai
+                donHang.setEmail(email);
+                donHang.setDienThoai(dienThoai);
+                donHang.setTenDayDu(tenDayDu);
+                donHang.setDiaChi(diaChi);
+            }
+
+            donHang.setGhiChu(ghiChu);
+            donHang.setTrangThai(DonHang.TrangThaiDonHang.MOI); // Đơn hàng đã thanh toán thành công
+
+            // Tính tổng tiền đơn hàng
+            float tongTien = tongGiaTriGioHang();
+            donHang.setTongTien(String.valueOf(tongTien));
+
+            // Lưu đơn hàng vào cơ sở dữ liệu
+            dvlDonHang.luuDH(donHang);
+
+            // Tạo danh sách chi tiết đơn hàng và lưu vào cơ sở dữ liệu
+            for (Map.Entry<Integer, Integer> entry : cartMap.entrySet()) {
+                Integer idSanPham = entry.getKey();
+                Integer soLuong = entry.getValue();
+                SanPham sanPham = dvlSanPham.xemSP(idSanPham);
+
+                ChiTietDH chiTiet = new ChiTietDH();
+                chiTiet.setDonHang(donHang); // Gán đơn hàng vào chi tiết đơn hàng
+                chiTiet.setSanPham(sanPham); // Gán sản phẩm vào chi tiết đơn hàng
+                chiTiet.setSoLuong(soLuong);
+                chiTiet.setDonGia(sanPham.getDonGia());
+                chiTiet.setTongTien(soLuong * sanPham.getDonGia());
+                chiTiet.setNgayTao(LocalDate.now()); // Ngày tạo chi tiết đơn hàng
+
+                // Lưu chi tiết đơn hàng vào cơ sở dữ liệu
+                dvlChiTietDH.luuCTDH(chiTiet);
+            }
+
+            // Xóa giỏ hàng khỏi session sau khi thanh toán thành công
+            session.removeAttribute("cart");
+            session.setAttribute("SoSanPhamTrongGioHang", 0);
+            session.setAttribute("TongGiaTriGioHangVi", "0");
+
+            return "redirect:/trangchu";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error/500"; // Xử lý lỗi và hiển thị trang lỗi
+        }
+    }
+
 }

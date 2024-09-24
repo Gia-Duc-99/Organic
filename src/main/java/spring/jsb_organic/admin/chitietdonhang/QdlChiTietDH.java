@@ -36,7 +36,7 @@ public class QdlChiTietDH {
             return "redirect:/admin/nhanvien/dangnhap";
         }
 
-        List<ChiTietDH> list = dvl.duyetCTDH();
+        List<ChiTietDH> list = dvl.dsChiTietDH();
         ChiTietDH dl = new ChiTietDH();
 
         model.addAttribute("dl", dl);

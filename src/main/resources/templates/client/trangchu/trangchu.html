@@ -40,7 +40,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title">
-                    <h2>Featured Product</h2>
+                    <h2>Sản Phẩm Nổi Bật</h2>
                 </div>
                 <div class="featured__controls">
                     <ul>
@@ -60,13 +60,12 @@
                         <img th:src="@{${sanPham.anh}}" alt="Product Image" />
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fa fa-retweet"></i></a></li>
                             <li><a href="#" th:onclick="cart.add([[${sanPham.id}]], 1,[[${sanPham.tenSP}]])"><i
                                         class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <h6 th:text="${sanPham.tenSP}"></h6>
+                        <a th:href="@{/trangchu/chitietsanpham/{id}(id=${sanPham.id})}"><h6 th:text="${sanPham.tenSP}"></h6></a>
                         <h5 th:text="${sanPham.donGiaVi} + đ"></h5>
                     </div>
                 </div>
@@ -101,7 +100,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-6">
                 <div class="latest-product__text">
-                    <h4>Latest Products</h4>
+                    <h4>Sản Phẩm Mới</h4>
                     <div class="latest-product__slider owl-carousel">
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">
@@ -166,7 +165,7 @@
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="latest-product__text">
-                    <h4>Top Rated Products</h4>
+                    <h4>Sản Phẩm Bán Chạy</h4>
                     <div class="latest-product__slider owl-carousel">
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">
@@ -231,7 +230,7 @@
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="latest-product__text">
-                    <h4>Review Products</h4>
+                    <h4>Sản Phẩm Khuyến Mãi</h4>
                     <div class="latest-product__slider owl-carousel">
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">

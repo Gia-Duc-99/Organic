@@ -1,27 +1,9 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Quản Lý Đơn Hàng</h1>
-
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <button type="button" data-toggle="modal" class="btn btn-primary" data-target="#showModal">Thêm Mới</button>
-    </div>
-    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-
-                <div class="modal-body" id="modalContent">
-                    <!-- Nội dung form sẽ được chèn vào đây -->
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="modalActionBtn">Thêm</button>
-                </div>
-
-            </div>
-        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -50,23 +32,20 @@
                 </tfoot>
                 <tbody>
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
-                        <td th:text="${dl.Id}"></td>
-                        <td th:text="${dl.ten}"></td>
+                        <td th:text="${dl.id}"></td>
+                        <td th:text="${dl.tenDayDu}"></td>
                         <td th:text="${dl.email}"></td>
-                        <td th:text="${dl.phone}"></td>
-                        <td th:text="${dl.trangThai}"></td>
+                        <td th:text="${dl.dienThoai}"></td>
+                        <td th:text="${dl.trangThai.trangThaiVi}"></td>
                         <td th:text="${dl.ngayTao}"></td>
                         <td>
-                            <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
+                            <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.id} + ')'">
                                 <i class="bi bi-eye"></i>Xem
                             </button>
                             &nbsp;
-                            <button class="btn btn-outline-warning" th:onclick="'showEditModal(' + ${dl.Id} + ')'">
+                            <button class="btn btn-outline-warning" th:data-id="${dl.id}"
+                                th:onclick="capNhatTrangThai(this)">
                                 <i class="bi bi-pencil-fill"></i>Sửa
-                            </button>
-                            &nbsp;
-                            <button class="btn btn-outline-danger" th:onclick="'showDeleteModal(' + ${dl.Id} + ')'">
-                                <i class="bi bi-trash"></i>Xoá
                             </button>
                         </td>
                     </tr>
@@ -79,36 +58,60 @@
 <!-- <div id="formThemContainer" style="display: none;">
     <div th:replace="/admin/donhang/them.html"></div>
 </div> -->
-<!-- <div id="formXemContainer" style="display: none;">
-    <div th:replace="/admin/donhang/xem.html"></div>
-</div> -->
-<!-- <div id="formSuaContainer" style="display: none;">
-    <div th:replace="/admin/donhang/sua.html"></div>
-</div> -->
+<div id="formXemContainer" style="display: none;">
+    <div th:replace="/admin/donhang/chitietdh.html"></div>
+</div>
 
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- <script>
+<script>
     window.showViewModal = function (id) {
         document.getElementById('modalActionBtn').style.display = 'none';
-        showModal('/admin/donhang/xem?id=' + id, 'Xem Chi Tiết', '', null);
-    }
-    window.showEditModal = function (id) {
-        showModal('/admin/donhang/sua?id=' + id, 'Chỉnh Sửa', 'Cập nhật', function () {
-            document.querySelector('#showModal form').submit();
+        $.ajax({
+            url: '/admin/donhang/xem',  // Đường dẫn API để lấy chi tiết đơn hàng
+            method: 'GET',
+            data: {
+                id: id  // Gửi mã đơn hàng để lấy chi tiết
+            },
+            success: function (response) {
+                // Chèn nội dung chi tiết đơn hàng vào modal
+                $('#modalContent').html(response);
+
+                // Hiển thị modal
+                $('#showModal').modal('show');
+            },
+            error: function () {
+                alert('Có lỗi xảy ra khi tải chi tiết đơn hàng.');
+            }
         });
     }
-    window.showDeleteModal = function (id) {
-        document.getElementById('modalContent').innerHTML = `
-        <h5>Xác nhận xóa</h5>
-        <p>Bạn có chắc chắn muốn xóa mục này không?</p> `;
-        document.getElementById('modalActionBtn').innerText = 'Xóa';
-        document.getElementById('modalActionBtn').onclick = function () {
-            var deleteUrl = '/admin/donhang/xoa?id=' + id;
-            window.location.href = deleteUrl;
-        };
-        $('#showModal').modal('show');
+    function capNhatTrangThai(button) {
+        document.getElementById('modalActionBtn').style.display = 'none';
+        var donHangId = button.getAttribute("data-id");
+
+        // Gửi yêu cầu POST để cập nhật trạng thái đơn hàng
+        $.ajax({
+            url: '/admin/donhang/capnhattrangthai',
+            method: 'POST',
+            data: {
+                id: donHangId  // Gửi id của đơn hàng
+            },
+            success: function (response) {
+                if (response === "success") {
+                    // Hiển thị modal thông báo thành công
+                    $('#modalContent').html('<p>Đơn hàng đã được cập nhật thành "Đã Xác Nhận".</p>');
+                    $('#showModal').modal('show');
+
+                } else {
+                    alert('Có lỗi xảy ra khi cập nhật trạng thái.');
+                }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra khi gửi yêu cầu cập nhật.');
+            }
+        });
     }
-</script> -->
+
+</script>

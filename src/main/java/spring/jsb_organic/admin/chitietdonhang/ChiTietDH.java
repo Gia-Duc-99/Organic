@@ -20,24 +20,19 @@ public class ChiTietDH {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String ten;
     private int soLuong;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
     private float donGia;
     private float tongTien;
 
-    // #region Nếu không có FK thì bỏ mã này đi
-    private int maDonHang;
-    private int maSanPham;
-
     // Mỗi chi tiết đơn hàng phải liên quan đến 1 đơn hàng
     @ManyToOne
-    @JoinColumn(name = "maDonHang", insertable = false, updatable = false)
+    @JoinColumn(name = "maDonHang")
     private DonHang donHang;
 
     // Mỗi chi tiết đơn hàng phải liên quan đến 1 sản phẩm
     @ManyToOne
-    @JoinColumn(name = "maSanPham", insertable = false, updatable = false)
+    @JoinColumn(name = "maSanPham")
     private SanPham sanPham;
 }

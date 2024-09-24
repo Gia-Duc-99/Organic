@@ -1,0 +1,66 @@
+<div th:fragment="chiTietDonHangFragment">
+    <div class="table-responsive">
+        <h3>Thông tin đơn hàng</h3>
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Email</th>
+                    <th>Số Điện Thoại:</th>
+                    <th>Địa Chỉ</th>
+                    <th>Ghi Chú</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Tạo</th>
+                    <th>Ngày Sửa</th>
+                    <th>Tổng Tiền</th>
+                </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+            <tbody>
+                <tr th:if="${donHang != null}">
+                    <td th:text="${donHang.id}"></td>
+                    <td th:text="${donHang.tenDayDu}"></td>
+                    <td th:text="${donHang.email}"></td>
+                    <td th:text="${donHang.dienThoai}"></td>
+                    <td th:text="${donHang.diaChi}"></td>
+                    <td th:text="${donHang.ghiChu}"></td>
+                    <td th:text="${donHang.trangThai.trangThaiVi}"></td>
+                    <td th:text="${donHang.ngayTao}"></td>
+                    <td th:text="${donHang.ngaySua}"></td>
+                    <td th:text="${donHang.tongTien}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Thông tin chi tiết đơn hàng</h3>
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ảnh</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Số Lượng</th>
+                    <th>Ngày Đặt</th>
+                    <th>Đơn Giá</th>
+                    <th>Thành Tiền</th>
+                </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+            <tbody>
+                <tr th:each="chiTiet : ${chiTietDHList}">
+                    <td th:text="${chiTiet.id}"></td>
+                    <td>
+                        <img th:src="${chiTiet.sanPham.anh}" style="height: 80px" />
+                    </td>
+                    <td th:text="${chiTiet.sanPham.tenSP}"></td>
+                    <td th:text="${chiTiet.soLuong}"></td>
+                    <td th:text="${chiTiet.ngayTao}"></td>
+                    <td th:text="${chiTiet.donGia}"></td>
+                    <td th:text="${chiTiet.tongTien}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
