@@ -34,6 +34,7 @@ public class SanPham {
     private String tenSP;
     private String anh;
     private int soLuong;
+    private Boolean noiBat = false;
 
     @Column(columnDefinition = "LONGTEXT")
     private String moTa;
@@ -41,7 +42,7 @@ public class SanPham {
     @Transient
     private MultipartFile mtFile;
     private float donGia;
-    private Boolean trangThai = true;
+    private Boolean trangThai = false;
     private int daBan;
     private BigDecimal giamGia;
 

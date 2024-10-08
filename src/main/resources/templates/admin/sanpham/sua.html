@@ -20,10 +20,6 @@
         <input type="text" class="form-control" th:field="*{daBan}">
     </div>
     <div class="col-md-3 mt-4">
-        <label class="form-label">Trạng Thái</label>
-        <input type="text" class="form-control" th:field="*{trangThai}">
-    </div>
-    <div class="col-md-3 mt-4">
         <label class="form-label">Đơn Giá</label>
         <input type="text" class="form-control" th:field="*{donGia}">
     </div>
@@ -38,10 +34,10 @@
     <div class="col-md-6 mt-4">
         <label class="form-label">Ảnh Cũ</label>
         <input type="text" class="form-control" th:value="*{anh}" disabled>
-        <img th:src="*{anh}" />
+        <img th:src="*{anh}" style="height: 100px"/>
     </div>
     <div class="col-md-6 mt-4">
-        <label for="formFile" class="form-label">Ảnh</label>
+        <label for="formFile" class="form-label">Ảnh Mới</label>
         <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
     </div>
     <div class="col-md-6 mt-4">
@@ -50,10 +46,19 @@
     </div>
     <div class="col-md-2 mt-4">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
+            <input class="form-check-input" type="checkbox" value="" id="TrangThai"
                 th:field="*{trangThai}">
-            <label class="form-check-label" for="flexCheckChecked">
+            <label class="form-check-label" for="TrangThai">
                 Trạng Thái
+            </label>
+        </div>
+    </div>
+    <div class="col-md-2 mt-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="NoiBat"
+                th:field="*{noiBat}">
+            <label class="form-check-label" for="NoiBat">
+                Nổi Bật
             </label>
         </div>
     </div>
@@ -64,7 +69,7 @@
             <option th:each="ncc : ${ncc}" th:value="${ncc.id}" th:text="${ncc.ten}"></option>
         </select>
     </div>
-    <div class="col-md-3 mt-4">
+    <div class="col-md-2 mt-4">
         <label class="form-label">Danh Mục</label>
         <select class="form-select" th:field="*{maDanhMuc}" aria-label="Danh Mục">
             <option value="" disabled selected>Chọn Danh Mục</option>

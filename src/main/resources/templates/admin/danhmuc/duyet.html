@@ -13,6 +13,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Tên Danh Mục</th>
+                        <th>Ảnh</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -20,6 +21,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Tên Danh Mục</th>
+                        <th>Ảnh</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -27,6 +29,7 @@
                     <tr th:each="dl : ${ds}" th:data-id="${dl.id}">
                         <td th:text="${dl.Id}"></td>
                         <td th:text="${dl.tenDM}"></td>
+                        <td><img th:src="${dl.duongDan}" style="height: 80px" /></td>
                         <td>
                             <button class="btn btn-outline-warning" th:onclick="'showEditModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-pencil-fill"></i>Sửa

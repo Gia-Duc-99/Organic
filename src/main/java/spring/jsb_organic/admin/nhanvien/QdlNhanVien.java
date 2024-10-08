@@ -47,8 +47,14 @@ public class QdlNhanVien {
     }
 
     @GetMapping("/nhanvien/sua")
-    public String getSua(Model model, @RequestParam("id") int id) {
+    public String getSua(Model model, @RequestParam("id") int id, RedirectAttributes redirectAttributes) {
+
         NhanVien dl = dvl.xemNhanVien(id);
+        // Kiểm tra nếu trạng thái là "Bị Cấm"
+        if (dl.getTrangThai() == Boolean.FALSE) {
+            redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Nhân viên này đang bị cấm và không thể chỉnh sửa.");
+            return "redirect:/admin/nhanvien/duyet";
+        }
         model.addAttribute("dl", dl);
         model.addAttribute("content", "/admin/nhanvien/sua.html");
         return "admin/nhanvien/sua.html";
@@ -56,6 +62,13 @@ public class QdlNhanVien {
 
     @GetMapping("/nhanvien/xoa")
     public String getXoa(@RequestParam("id") int id, RedirectAttributes redirectAttributes) {
+        NhanVien dl = dvl.xemNhanVien(id);
+
+        // Kiểm tra nếu trạng thái là "Bị Cấm"
+        if (dl.getTrangThai() == Boolean.FALSE) {
+            redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Nhân viên này đang bị cấm và không thể xóa.");
+            return "redirect:/admin/nhanvien/duyet"; // Quay lại trang danh sách nhân viên
+        }
         try {
             this.dvl.xoaNhanVien(id);
             redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc xóa!");
@@ -158,17 +171,17 @@ public class QdlNhanVien {
 
     @PostMapping("/nhanvien/sua")
     public String postSua(@ModelAttribute("dl") NhanVien dl, RedirectAttributes redirectAttributes) {
-        // Kiểm tra nếu mật khẩu không thay đổi
+        NhanVien existingNv = dvl.xemNhanVien(dl.getId());
+        // Kiểm tra nếu trạng thái là "Bị Cấm"
+        if (existingNv.getTrangThai() == Boolean.FALSE) {
+            redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Nhân viên này đang bị cấm và không thể cập nhật.");
+            return "redirect:/admin/nhanvien/duyet";
+        }
+        // Nếu mật khẩu trống, giữ nguyên mật khẩu cũ
         if (dl.getMatKhau() == null || dl.getMatKhau().isEmpty()) {
-            NhanVien existingNv = dvl.xemNhanVien(dl.getId());
-            if (existingNv != null) { // Kiểm tra nếu existingNv không phải là null
-                dl.setMatKhau(existingNv.getMatKhau()); // Giữ nguyên mật khẩu cũ
-            } else {
-                redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Không tìm thấy nhân viên với ID: " + dl.getId());
-                return "redirect:/admin/nhanvien/duyet"; // Quay lại trang duyệt nếu không tìm thấy
-            }
+            dl.setMatKhau(existingNv.getMatKhau()); // Giữ mật khẩu cũ
         } else {
-            dl.setMatKhau(BCrypt.hashpw(dl.getMatKhau(), BCrypt.gensalt(12)));
+            dl.setMatKhau(BCrypt.hashpw(dl.getMatKhau(), BCrypt.gensalt(12))); // Hash mật khẩu mới
         }
 
         // Chỉnh sửa để lưu nhân viên thay vì thêm mới

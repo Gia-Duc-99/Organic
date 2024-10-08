@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,5 +118,21 @@ public class DvlSanPham {
             }
         }
         return cartData;
+    }
+    public List<SanPham> getSanPhamNoiBat() {
+        Pageable limit = PageRequest.of(0, 8); 
+        return kdl.findTopSanPhamNoiBat(limit);
+    }
+
+    public List<SanPham> getSanPhamMoi() {
+        return kdl.findTop10ByNgayTao();
+    }
+
+    public List<SanPham> getSanPhamBanChay() {
+        return kdl.findTop10ByDaBan();
+    }
+
+    public List<SanPham> getSanPhamKhuyenMai() {
+        return kdl.findSanPhamKhuyenMai();
     }
 }

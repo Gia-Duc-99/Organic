@@ -43,7 +43,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item ">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="/admin/trangchu">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -94,7 +94,6 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="/admin/sanpham">Danh Sách SP</a>
-                        <a class="collapse-item" href="/admin/anhsanpham">Ảnh Sản Phẩm</a>
                         <a class="collapse-item" href="/admin/nhacungcap">Nhà Cung Cấp</a>
                         <a class="collapse-item" href="/admin/danhmuc">Danh Mục</a>
                     </div>
@@ -215,7 +214,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="/img/undraw_profile_1.svg" alt="...">
+                                        <img class="rounded-circle" src="/admin/img/undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -331,7 +330,6 @@
             </div>
         </div>
     </div>
-
     <!-- Bootstrap core JavaScript-->
     <script src="/admin/vendor/jquery/jquery.min.js"></script>
     <script src="/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -347,12 +345,51 @@
 
     <!-- Page level custom scripts -->
     <script src="/admin/js/demo/datatables-demo.js"></script>
+    <script>
+        $(document).ready(function () {
+            
+            // Khi nhấn vào các mục cha (nav-link collapsed)
+            $('.nav-link.collapsed').click(function () {
+                // Bỏ class "active" khỏi tất cả các mục cha
+                $('.nav-item').removeClass('active');
 
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+                // Thêm class "active" vào mục cha được chọn
+                $(this).closest('.nav-item').addClass('active');
+            });
+            // Khi nhấn vào các mục con (collapse-item)
+            $('.collapse-item').click(function () {
+                // Bỏ class "active" khỏi tất cả các mục con
+                $('.collapse-item').removeClass('active');
 
+                // Thêm class "active" vào mục con được chọn
+                $(this).addClass('active');
 
+                // Mở rộng mục cha và giữ mục con mở (sử dụng Bootstrap collapse API)
+                var parentCollapse = $(this).closest('.collapse');
+                parentCollapse.collapse('show');
+
+                var parentNavItem = parentCollapse.closest('.nav-item');
+                parentNavItem.addClass('active');
+            });
+
+            // Giữ trạng thái sau khi refresh trang
+            var currentUrl = window.location.href;
+            $('.collapse-item').each(function () {
+                if (this.href === currentUrl) {
+                    // Thêm class "active" cho mục con hiện tại
+                    $(this).addClass('active');
+
+                    // Mở mục con liên quan thông qua Bootstrap collapse API
+                    var parentCollapse = $(this).closest('.collapse');
+                    parentCollapse.collapse('show');
+
+                    // Thêm class "active" cho mục cha
+                    var parentNavItem = parentCollapse.closest('.nav-item');
+                    parentNavItem.addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

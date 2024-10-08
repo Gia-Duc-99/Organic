@@ -3,29 +3,9 @@
     <div class="container">
         <div class="row">
             <div class="categories__slider owl-carousel">
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="client/img/categories/cat-1.jpg">
-                        <h5><a href="#">Fresh Fruit</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="client/img/categories/cat-2.jpg">
-                        <h5><a href="#">Dried Fruit</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="client/img/categories/cat-3.jpg">
-                        <h5><a href="#">Vegetables</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="client/img/categories/cat-4.jpg">
-                        <h5><a href="#">drink fruits</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="client/img/categories/cat-5.jpg">
-                        <h5><a href="#">drink fruits</a></h5>
+                <div class="col-lg-3" th:each="danhMuc : ${dsDanhMuc}">
+                    <div class="categories__item set-bg" th:data-setbg="${danhMuc.duongDan}">
+                        <h5><a href="#" th:text="${danhMuc.tenDM}"></a></h5>
                     </div>
                 </div>
             </div>
@@ -42,30 +22,23 @@
                 <div class="section-title">
                     <h2>Sản Phẩm Nổi Bật</h2>
                 </div>
-                <div class="featured__controls">
-                    <ul>
-                        <li class="active" data-filter="*">All</li>
-                        <li data-filter=".oranges">Oranges</li>
-                        <li data-filter=".fresh-meat">Fresh Meat</li>
-                        <li data-filter=".vegetables">Vegetables</li>
-                        <li data-filter=".fastfood">Fastfood</li>
-                    </ul>
-                </div>
             </div>
         </div>
         <div class="row featured__filter">
-            <div class="col-lg-3 col-md-4 col-sm-6" th:each="sanPham : ${dsSanPham}">
+            <div class="col-lg-3 col-md-4 col-sm-6" th:each="sanPham : ${sanPhamNoiBat}">
                 <div class="featured__item">
-                    <div class="featured__item__pic">
-                        <img th:src="@{${sanPham.anh}}" alt="Product Image" />
+                    <div class="featured__item__pic set-bg" th:data-setbg="@{${sanPham.anh}}">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                            <li><a href="#"><i class="fa fa-retweet"></i></a></li>
                             <li><a href="#" th:onclick="cart.add([[${sanPham.id}]], 1,[[${sanPham.tenSP}]])"><i
                                         class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <a th:href="@{/trangchu/chitietsanpham/{id}(id=${sanPham.id})}"><h6 th:text="${sanPham.tenSP}"></h6></a>
+                        <a th:href="@{/trangchu/chitietsanpham/{id}(id=${sanPham.id})}">
+                            <h6 th:text="${sanPham.tenSP}"></h6>
+                        </a>
                         <h5 th:text="${sanPham.donGiaVi} + đ"></h5>
                     </div>
                 </div>
@@ -102,63 +75,19 @@
                 <div class="latest-product__text">
                     <h4>Sản Phẩm Mới</h4>
                     <div class="latest-product__slider owl-carousel">
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
+                        <div th:each="i : ${#numbers.sequence(0, sanPhamMoi.size() / 3)}">
+                            <div class="latest-prdouct__slider__item" th:each="sp, iterStat : ${sanPhamMoi}">
+                                <a href="#" class="latest-product__item"
+                                    th:if="${iterStat.index >= i * 3 and iterStat.index < (i + 1) * 3}">
+                                    <div class="latest-product__item__pic">
+                                        <img th:src="@{${sp.anh}}" alt="Ảnh sản phẩm">
+                                    </div>
+                                    <div class="latest-product__item__text">
+                                        <h6 th:text="${sp.tenSP}"></h6>
+                                        <span th:text="${sp.getDonGiaVi()} + đ"></span>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,63 +96,19 @@
                 <div class="latest-product__text">
                     <h4>Sản Phẩm Bán Chạy</h4>
                     <div class="latest-product__slider owl-carousel">
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
+                        <div th:each="i : ${#numbers.sequence(0, sanPhamBanChay.size() / 3)}">
+                            <div class="latest-prdouct__slider__item" th:each="sp, iterStat : ${sanPhamBanChay}">
+                                <a href="#" class="latest-product__item"
+                                    th:if="${iterStat.index >= i * 3 and iterStat.index < (i + 1) * 3}">
+                                    <div class="latest-product__item__pic">
+                                        <img th:src="@{${sp.anh}}" alt="Ảnh sản phẩm">
+                                    </div>
+                                    <div class="latest-product__item__text">
+                                        <h6 th:text="${sp.tenSP}"></h6>
+                                        <span th:text="${sp.getDonGiaVi()} + đ"></span>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,63 +117,20 @@
                 <div class="latest-product__text">
                     <h4>Sản Phẩm Khuyến Mãi</h4>
                     <div class="latest-product__slider owl-carousel">
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="client/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
+                        <div th:each="i : ${#numbers.sequence(0, sanPhamKhuyenMai.size() / 3)}">
+                            <div class="latest-prdouct__slider__item" th:each="sp, iterStat : ${sanPhamKhuyenMai}"
+                                th:if="${iterStat.index >= i * 3 and iterStat.index < (i + 1) * 3}">
+                                <a href="#" class="latest-product__item">
+                                    <div class="latest-product__item__pic">
+                                        <img th:src="@{${sp.anh}}" alt="Ảnh sản phẩm">
+                                    </div>
+                                    <div class="latest-product__item__text">
+                                        <h6 th:text="${sp.tenSP}"></h6>
+                                        <span th:text="${sp.getDonGiaVi()} + đ"></span>
+                                        <p>Giảm giá: <span th:text="${sp.giamGia} + '%'"></span></p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

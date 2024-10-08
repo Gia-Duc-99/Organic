@@ -37,10 +37,19 @@
     </div>
     <div class="col-md-2 mt-4">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
+            <input class="form-check-input" type="checkbox" value="" id="TrangThai" 
                 th:field="*{trangThai}">
-            <label class="form-check-label" for="flexCheckChecked">
+            <label class="form-check-label" for="TrangThai">
                 Cho Phép
+            </label>
+        </div>
+    </div>
+    <div class="col-md-2 mt-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="NoiBat"
+                th:field="*{noiBat}">
+            <label class="form-check-label" for="NoiBat">
+                Nổi Bật
             </label>
         </div>
     </div>
@@ -51,7 +60,7 @@
             <option th:each="ncc : ${ncc}" th:value="${ncc.id}" th:text="${ncc.ten}"></option>
         </select>
     </div>
-    <div class="col-md-3 mt-4">
+    <div class="col-md-2 mt-4">
         <label class="form-label">Danh Mục</label>
         <select class="form-select" th:field="*{maDanhMuc}" aria-label="Danh Mục">
             <option value="" disabled selected>Chọn Danh Mục</option>

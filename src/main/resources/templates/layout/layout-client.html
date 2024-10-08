@@ -82,9 +82,13 @@
         <div class="humberger__menu__cart">
             <ul>
                 <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
+                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span id="cart-total"
+                            th:text="${session.SoSanPhamTrongGioHang != null ? session.SoSanPhamTrongGioHang : 0}">0</span></a>
+                </li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            <div class="header__cart__price">item: <span id="cart_total_price"
+                    th:text="${session.TongGiaTriGioHangVi != null ? session.TongGiaTriGioHangVi + ' đ' : '0 đ'}"></span>
+            </div>
         </div>
         <div class="humberger__menu__widget">
             <div class="header__top__right__language">
@@ -97,23 +101,31 @@
                 </ul>
             </div>
             <div class="header__top__right__auth">
-                <a href="/trangchu/dangnhap"><i class="fa fa-user"><span th:if="${session.KhachHang_Ten != null}">
+                <div class="dropdown">
+                    <!-- Kiểm tra nếu khách hàng đã đăng nhập -->
+                    <a href="/trangchu/dangnhap" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user"></i>
+                        <span th:if="${session.KhachHang_Ten != null}">
                             <span th:text="${session.KhachHang_Ten}"></span>
-                            <!-- Hiển thị tên khách hàng -->
                         </span>
                         <span th:if="${session.KhachHang_Ten == null}">
                             Đăng Nhập
-                        </span></i></a>
+                        </span>
+                    </a>
+                    <!-- Dropdown menu chỉ hiện nếu người dùng đã đăng nhập -->
+                    <div class="dropdown-menu" th:if="${session.KhachHang_Ten != null}"
+                        aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/trangchu/thongtintaikhoan">Thông tin tài khoản</a>
+                        <a class="dropdown-item" href="/trangchu/dangxuat">Đăng xuất</a>
+                    </div>
+                </div>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
                 <li class="active"><a href="/trangchu">Home</a></li>
-                <li><a href="./shop-grid.html">Shop</a>
-                    <ul class="header__menu__dropdown">
-                        <li><a href="./shop-details.html">Shop Details</a></li>
-                    </ul>
-                </li>
+                <li><a href="/trangchu/shop">Shop</a></li>
                 <li><a href="/trangchu/giohang">Shoping Cart</a></li>
                 <li><a href="./blog.html">Blog</a></li>
                 <li><a href="./contact.html">Contact</a></li>
@@ -128,8 +140,7 @@
         </div>
         <div class="humberger__menu__contact">
             <ul>
-                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                <li>Giao hàng miễn phí cho tất cả đơn hàng trị giá $99</li>
+                <li><i class="fa fa-map"></i>Giao hàng miễn phí cho tất cả đơn hàng dưới 3km</li>
             </ul>
         </div>
     </div>
@@ -143,8 +154,7 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="header__top__left">
                             <ul>
-                                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                                <li>Giao hàng miễn phí cho tất cả đơn hàng trị giá $99</li>
+                                <li><i class="fa fa-map"></i>Giao hàng miễn phí cho tất cả đơn hàng dưới 3km</li>
                             </ul>
                         </div>
                     </div>
@@ -166,21 +176,28 @@
                                 </ul>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="/trangchu/dangnhap"><i class="fa fa-user">
-                                        <span th:if="${session.KhachHang_Ten != null}">
-                                            <span th:text="${session.KhachHang_Ten}"></span>
-                                            <!-- Hiển thị tên khách hàng -->
-                                        </span>
-                                        <span th:if="${session.KhachHang_Ten == null}">
-                                            Đăng Nhập
-                                        </span>
-                                    </i></a>
-                                <a href="/trangchu/dangxuat"><i class="fa fa-sign-out"></i>
-                                    <span>
-                                        Đăng Xuất
-                                    </span>
-                                    </i></a>
+                                <div class="dropdown" th:if="${session.KhachHang_Ten != null}">
+                                    <!-- Hiển thị tên khách hàng và dropdown nếu đã đăng nhập -->
+                                    <a href="#" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-user"></i>
+                                        <span th:text="${session.KhachHang_Ten}"></span>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="/trangchu/thongtintaikhoan">Thông tin tài
+                                            khoản</a>
+                                        <a class="dropdown-item" href="/trangchu/dangxuat">Đăng xuất</a>
+                                    </div>
+                                </div>
+
+                                <!-- Hiển thị nút đăng nhập nếu chưa đăng nhập -->
+                                <a th:if="${session.KhachHang_Ten == null}" href="/trangchu/dangnhap">
+                                    <i class="fa fa-user"></i>
+                                    Đăng Nhập
+                                </a>
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -190,18 +207,14 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href=""><img src="anhhethong/logo1.png"></a>
+                        <a href=""><img th:src="@{/anhhethong/logo1.png}" alt="Logo"></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
                             <li class="active"><a href="/trangchu">Home</a></li>
-                            <li><a href="./shop-grid.html">Shop</a>
-                                <ul class="header__menu__dropdown">
-                                    <li><a href="./shop-details.html">Shop Details</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="/trangchu/shop">Shop</a></li>
                             <li><a href="/trangchu/giohang">Shoping Cart</a></li>
                             <li><a href="./blog.html">Blog</a></li>
                             <li><a href="./contact.html">Contact</a></li>
@@ -343,10 +356,7 @@
                         <div class="footer__copyright__text">
                             <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 Copyright &copy;
-                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
-                                template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
-                                    href="https://colorlib.com" target="_blank">Colorlib</a>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved
                             </p>
                         </div>
                         <div class="footer__copyright__payment"><img src="/client/img/payment-item.png" alt=""></div>

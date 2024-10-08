@@ -52,14 +52,32 @@ public class QdlTrangChu {
     })
     public String getTrangChu(Model model) {
         model.addAttribute("dsQuangCao", dvlQuangCao.dsQCChoPhep());
+        model.addAttribute("dsDanhMuc", dvlDanhMuc.dsDanhMuc());
+        model.addAttribute("sanPhamNoiBat", dvlSanPham.getSanPhamNoiBat());
+        model.addAttribute("sanPhamMoi", dvlSanPham.getSanPhamMoi());
+        model.addAttribute("sanPhamBanChay", dvlSanPham.getSanPhamBanChay());
+        model.addAttribute("sanPhamKhuyenMai", dvlSanPham.getSanPhamKhuyenMai());
+
+        model.addAttribute("title", "Trang Chủ");
+
+        model.addAttribute("content", "/client/trangchu/trangchu.html");
+
+        return "layout/layout-client.html";
+    }
+
+    @GetMapping({
+            "/trangchu/shop"
+    })
+    public String getShopList(Model model) {
+        model.addAttribute("dsQuangCao", dvlQuangCao.dsQCChoPhep());
         model.addAttribute("dsSanPhamNoiBat", dvlSanPham.dsSanPham());
 
         model.addAttribute("dsSanPham", dvlSanPham.dsSanPham());
         model.addAttribute("dsDanhMuc", dvlDanhMuc.dsDanhMuc());
 
-        model.addAttribute("title", "Trang Chủ");
+        model.addAttribute("title", "Shop List");
 
-        model.addAttribute("content", "/client/trangchu/trangchu.html");
+        model.addAttribute("content", "/client/trangchu/shop.html");
 
         return "layout/layout-client.html";
     }

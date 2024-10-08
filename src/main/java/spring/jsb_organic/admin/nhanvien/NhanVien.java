@@ -30,7 +30,7 @@ public class NhanVien {
     private MultipartFile mtFile;
     private String anhDaiDien;
     
-    private Boolean trangThai;
+    private Boolean trangThai = false;
     private String dienThoai;
     private String moTa;
     private int thuTu;

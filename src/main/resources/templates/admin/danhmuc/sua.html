@@ -1,10 +1,19 @@
 <h1 class="h3 mb-2">Sửa Danh Mục</h1>
-<form class="row g-3" method="post" th:action="@{/admin/danhmuc/sua}" th:object="${dl}">
+<form class="row g-3" method="post" th:action="@{/admin/danhmuc/sua}" th:object="${dl}" enctype="multipart/form-data">
     <div class="">
         <input type="hidden" class="form-control" th:field="*{Id}">
     </div>
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">Tên Danh Mục</label>
         <input type="text" class="form-control" th:field="*{tenDM}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Ảnh Cũ</label>
+        <input type="text" class="form-control" th:value="*{duongDan}" disabled>
+        <img th:src="*{duongDan}" />
+    </div>
+    <div class="col-md-6">
+        <label for="formFile" class="form-label">Ảnh</label>
+        <input class="form-control" type="file" id="formFile" th:field="*{mtFile}">
     </div>
 </form>
