@@ -29,8 +29,7 @@ public class QdlPhanHoi {
     private HttpSession session;
 
     @GetMapping({
-            "/phanhoi",
-            "/phanhoi/duyet"
+            "/phanhoi"
     })
     public String getDuyet(Model model) {
         // Lưu URI_BEFORE_LOGIN vào session
@@ -80,7 +79,7 @@ public class QdlPhanHoi {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra PHi xóa: " + e.getMessage());
         }
 
-        return "redirect:/admin/phanhoi/duyet";
+        return "redirect:/admin/phanhoi";
     }
 
     @GetMapping("/phanhoi/xem")
@@ -111,7 +110,7 @@ public class QdlPhanHoi {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra PHi thêm mới: " + e.getMessage());
         }
 
-        return "redirect:/admin/phanhoi/duyet";
+        return "redirect:/admin/phanhoi";
     }
 
     @PostMapping("/phanhoi/sua")
@@ -126,7 +125,7 @@ public class QdlPhanHoi {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra PHi cập nhật: " + e.getMessage());
         }
 
-        return "redirect:/admin/phanhoi/duyet";
+        return "redirect:/admin/phanhoi";
     }
 
     @PostMapping("/phanhoi/xoa")
@@ -137,6 +136,6 @@ public class QdlPhanHoi {
         this.dvl.xoaPH(id);
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc xóa !");
 
-        return "redirect:/admin/phanhoi/duyet";
+        return "redirect:/admin/phanhoi";
     }
 }

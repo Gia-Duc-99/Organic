@@ -20,8 +20,8 @@
         <input type="text" class="form-control" th:field="*{tuaDe}" disabled>
     </div>
     <div class="col-md-3 mt-4">
-        <label class="form-label">Tựa Đề Phụ</label>
-        <input type="text" class="form-control" th:field="*{tuaDePhu}" disabled>
+        <label class="form-label">Nội Dung</label>
+        <input type="text" class="form-control" th:field="*{noiDung}" disabled>
     </div>
     <div class="col-md-3 mt-4">
         <label class="form-label">Giá Tiền</label>
@@ -32,8 +32,8 @@
         <input type="text" class="form-control" th:field="*{link}" disabled>
     </div>
     <div class="col-md-6 mt-4">
-        <label for="formFile" class="form-label">Ảnh</label>
-        <input class="form-control" type="file" id="formFile" th:field="*{anh}" disabled>
+        <label class="form-label">Ảnh</label>
+        <img th:src="*{anh}" style="height: 100px"/>
     </div>
     <div class="col-md-6 mt-4">
         <label class="form-label">Mô Tả</label>
@@ -41,8 +41,8 @@
     </div>
     <div class="col-md-6 mt-4">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
-                th:field="*{choPhep}" disabled>
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked th:field="*{choPhep}"
+                disabled>
             <label class="form-check-label" for="flexCheckChecked">
                 Cho Phép
             </label>
@@ -50,8 +50,8 @@
     </div>
     <div class="col-md-6 mt-4">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked
-                th:field="*{choPhep}" disabled>
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked th:field="*{choPhep}"
+                disabled>
             <label class="form-check-label" for="flexCheckChecked">
                 Đã Thanh Toán
             </label>

@@ -1,14 +1,11 @@
 package spring.jsb_organic.admin.sanpham;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
+import spring.jsb_organic.DvlCloudinary;
 
 @Service
 public class DvlSanPham {
     @Autowired
     private KdlSanPham kdl;
 
+    @Autowired
+    private DvlCloudinary dvlCloudinary;
+
     public List<SanPham> dsSanPham() {
         return kdl.findAll();
-    }
-
-    public List<SanPham> duyetSP() {
-        return kdl.findAll();
-    }
-
-    public SanPham timSP(int id) {
-        return kdl.findById(id).orElse(null);
     }
 
     public SanPham xemSP(int id) {
@@ -42,46 +35,39 @@ public class DvlSanPham {
     public void luuSP(SanPham dl) {
         MultipartFile file = dl.getMtFile();
         String existingPath = dl.getAnh(); // Lưu đường dẫn ảnh cũ
-        System.out.println("Đường dẫn ảnh cũ: " + existingPath);
+        String existingPublicId = dl.getPublicId();
+
         if (file != null && !file.isEmpty()) {
             try {
-                if (existingPath != null && !existingPath.isEmpty()) {
-                    Files.deleteIfExists(Paths.get("src/main/resources/static" + existingPath));
+                // Upload ảnh mới lên Cloudinary
+                Map<String, Object> uploadResult = dvlCloudinary.uploadImage(file);
+                // Lấy URL và public_id của ảnh sau khi upload
+                String imageUrl = (String) uploadResult.get("url");
+                String publicId = (String) uploadResult.get("public_id");
+
+                dl.setAnh(imageUrl);
+                dl.setPublicId(publicId);
+
+                // Xóa ảnh cũ từ Cloudinary
+                if (existingPublicId != null && !existingPublicId.isEmpty()) {
+                    dvlCloudinary.deleteImage(existingPublicId);
                 }
-                String fileName = file.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/anhhethong/";
-
-                if (!Files.exists(Paths.get(uploadDir))) {
-                    Files.createDirectories(Paths.get(uploadDir));
-                }
-
-                String filePath = uploadDir + UUID.randomUUID().toString() + "_" + fileName;
-
-                Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-                String savedFileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-                dl.setAnh("/anhhethong/" + savedFileName); // Cập nhật đường dẫn ảnh mới
             } catch (IOException e) {
                 e.printStackTrace();
+                dl.setPublicId(existingPublicId);
             }
         } else {
-            // Nếu không có file mới, giữ nguyên đường dẫn ảnh cũ
             dl.setAnh(existingPath);
         }
         this.kdl.save(dl);
     }
 
-    public void xoaSP(int id) {
+    public void xoaSP(int id) throws IOException {
         Optional<SanPham> optional = kdl.findById(id);
         if (optional.isPresent()) {
             SanPham dl = optional.get();
-            String filePath = "src/main/resources/static" + dl.getAnh(); // Lấy đường dẫn ảnh
-            try {
-                Files.deleteIfExists(Paths.get(filePath)); // Xóa file nếu tồn tại
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            this.kdl.deleteById(id);
+            dvlCloudinary.deleteImage(dl.getPublicId()); // Xóa ảnh từ Cloudinary
+            kdl.deleteById(id);
         }
     }
 
@@ -106,7 +92,7 @@ public class DvlSanPham {
             for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
                 int productId = entry.getKey();
                 int quantity = entry.getValue();
-                SanPham sanPham = timSP(productId);
+                SanPham sanPham = xemSP(productId);
                 if (sanPham != null) {
                     Map<String, Object> productData = new HashMap<>();
                     productData.put("ten", sanPham.getTenSP());
@@ -119,8 +105,9 @@ public class DvlSanPham {
         }
         return cartData;
     }
+
     public List<SanPham> getSanPhamNoiBat() {
-        Pageable limit = PageRequest.of(0, 8); 
+        Pageable limit = PageRequest.of(0, 8);
         return kdl.findTopSanPhamNoiBat(limit);
     }
 
@@ -135,4 +122,9 @@ public class DvlSanPham {
     public List<SanPham> getSanPhamKhuyenMai() {
         return kdl.findSanPhamKhuyenMai();
     }
+
+    public List<SanPham> searchProducts(String query) {
+        return kdl.findByTenSPContaining(query);
+    }
+
 }

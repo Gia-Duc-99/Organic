@@ -26,6 +26,7 @@
         </div>
         <div class="checkout__form">
             <h4>Chi tiết thanh toán</h4>
+            <p th:if="${khachHang == null}">Không tìm thấy thông tin khách hàng.</p>
             <form action="/trangchu/giohang/thanhtoan/thanhcong" method="post">
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
@@ -33,13 +34,13 @@
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Tên<span>*</span></p>
-                                    <input type="text" name="tenDayDu" required>
+                                    <input type="text" name="tenDayDu" th:value="${khachHang.ten}" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Địa Chỉ<span>*</span></p>
-                                    <input type="text" name="diaChi" required>
+                                    <input type="text" name="diaChi" th:value="${khachHang.diaChi}" required>
                                 </div>
                             </div>
                         </div>
@@ -47,13 +48,7 @@
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Email<span>*</span></p>
-                                    <input type="email" name="email">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Mật Khẩu<span>*</span></p>
-                                    <input type="password" name="password" required>
+                                    <input type="email" name="email" th:value="${khachHang.email}">
                                 </div>
                             </div>
                         </div>
@@ -61,7 +56,7 @@
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Phone<span>*</span></p>
-                                    <input type="text" name="dienThoai" required>
+                                    <input type="text" name="dienThoai" th:value="${khachHang.phone}" required>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +81,9 @@
                             <div class="checkout__order__other">Mã khuyến mãi <span>30000 đ</span></div>
                             <div class="checkout__order__total">Tổng cộng <span>[[${tongGiaTriGioHangVi}]] đ</span>
                             </div>
-                            <button type="submit" class="site-btn">PLACE ORDER</button>
+                            <label><input type="radio" name="phuongThucThanhToan" value="the" required> Thanh toán bằng thẻ</label>
+                            <label><input type="radio" name="phuongThucThanhToan" value="tien_mat"> Thanh toán khi nhận hàng</label>
+                            <button type="submit" class="site-btn">ĐẶT HÀNG</button>
                         </div>
                     </div>
                 </div>

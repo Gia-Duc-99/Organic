@@ -28,8 +28,7 @@ public class QdlCaiDat {
     private HttpSession session;
 
     @GetMapping({
-            "/caidat",
-            "/caidat/duyet"
+            "/caidat"
     })
     public String getDuyet(Model model) {
         // Lưu URI_BEFORE_LOGIN vào session
@@ -79,7 +78,7 @@ public class QdlCaiDat {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi xóa: " + e.getMessage());
         }
 
-        return "redirect:/admin/caidat/duyet";
+        return "redirect:/admin/caidat";
     }
 
     @GetMapping("/caidat/xem")
@@ -108,7 +107,7 @@ public class QdlCaiDat {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi thêm mới: " + e.getMessage());
         }
 
-        return "redirect:/admin/caidat/duyet";
+        return "redirect:/admin/caidat";
     }
 
     @PostMapping("/caidat/sua")
@@ -123,7 +122,7 @@ public class QdlCaiDat {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi cập nhật: " + e.getMessage());
         }
 
-        return "redirect:/admin/caidat/duyet";
+        return "redirect:/admin/caidat";
     }
 
     @PostMapping("/caidat/xoa")
@@ -135,6 +134,6 @@ public class QdlCaiDat {
 
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc xóa !");
 
-        return "redirect:/admin/caidat/duyet";
+        return "redirect:/admin/caidat";
     }
 }

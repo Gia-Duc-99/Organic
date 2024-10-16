@@ -34,8 +34,7 @@ public class QdlDonHang {
     private HttpSession session;
 
     @GetMapping({
-            "/donhang",
-            "/donhang/duyet"
+            "/donhang"
     })
     public String getDuyet(Model model) {
         // Lưu URI_BEFORE_LOGIN vào session
@@ -93,7 +92,20 @@ public class QdlDonHang {
         // Cập nhật trạng thái đơn hàng
         DonHang donHang = dvl.xemDH(id);
         if (donHang != null) {
-            donHang.setTrangThai(TrangThaiDonHang.DA_XAC_NHAN);
+            // Cập nhật trạng thái đơn hàng theo thứ tự: Mới -> Đã Xác Nhận -> Đang Giao ->
+            // Đã Giao
+            if (donHang.getTrangThai() == DonHang.TrangThaiDonHang.MOI) {
+                donHang.setTrangThai(DonHang.TrangThaiDonHang.DA_XAC_NHAN);
+            } else if (donHang.getTrangThai() == DonHang.TrangThaiDonHang.DA_XAC_NHAN) {
+                donHang.setTrangThai(DonHang.TrangThaiDonHang.DANG_GIAO);
+            } else if (donHang.getTrangThai() == DonHang.TrangThaiDonHang.DANG_GIAO) {
+                donHang.setTrangThai(DonHang.TrangThaiDonHang.DA_GIAO);
+                // Nếu trạng thái thanh toán là chưa thanh toán, thì cập nhật thành đã thanh
+                // toán
+                if (donHang.getTrangThaiThanhToan() == null || !donHang.getTrangThaiThanhToan()) {
+                    donHang.setTrangThaiThanhToan(true); // Đặt là đã thanh toán
+                }
+            }
             dvl.luuDH(donHang); // Gọi phương thức cập nhật trong service
             return "success";
         } else {

@@ -29,6 +29,7 @@ public class NhanVien {
     @Transient
     private MultipartFile mtFile;
     private String anhDaiDien;
+    private String publicId; // public_id của ảnh trên Cloudinary
     
     private Boolean trangThai = false;
     private String dienThoai;

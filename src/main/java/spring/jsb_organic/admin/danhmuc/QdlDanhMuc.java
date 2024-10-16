@@ -1,12 +1,8 @@
 package spring.jsb_organic.admin.danhmuc;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import spring.jsb_organic.admin.sanpham.SanPham;
+import spring.jsb_organic.DvlCloudinary;
 import spring.jsb_organic.qdl.Qdl;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +26,16 @@ public class QdlDanhMuc {
     private DvlDanhMuc dvl;
 
     @Autowired
+    private DvlCloudinary dvlCloudinary;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Autowired
     private HttpSession session;
 
     @GetMapping({
-            "/danhmuc",
-            "/danhmuc/duyet"
+            "/danhmuc"
     })
     public String getDuyet(Model model) {
         // Lưu URI_BEFORE_LOGIN vào session
@@ -87,7 +85,7 @@ public class QdlDanhMuc {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi xóa: " + e.getMessage());
         }
 
-        return "redirect:/admin/danhmuc/duyet";
+        return "redirect:/admin/danhmuc";
     }
 
     @GetMapping("/danhmuc/xem")
@@ -116,66 +114,63 @@ public class QdlDanhMuc {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi thêm mới: " + e.getMessage());
         }
 
-        return "redirect:/admin/danhmuc/duyet";
+        return "redirect:/admin/danhmuc";
     }
 
     @PostMapping("/danhmuc/sua")
-    public String postSua(@ModelAttribute("dl") DanhMuc dl, RedirectAttributes redirectAttributes, @RequestParam("mtFile") MultipartFile file) {
+    public String postSua(@ModelAttribute("dl") DanhMuc dl, RedirectAttributes redirectAttributes,
+            @RequestParam("mtFile") MultipartFile file) {
         if (Qdl.NVChuaDangNhap(request))
             return "redirect:/admin/nhanvien/dangnhap";
 
         DanhMuc existingProduct = dvl.xemDM(dl.getId());
         if (existingProduct == null) {
-            redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Sản phẩm không tồn tại!");
-            return "redirect:/admin/sanpham/duyet";
+            redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Danh Mục không tồn tại!");
+            return "redirect:/admin/danhmuc";
         }
 
         // Lưu đường dẫn ảnh cũ
-        String existingPath = existingProduct.getDuongDan();
-        // Xóa ảnh cũ nếu có
-        if (existingPath != null && !existingPath.isEmpty()) {
-            String existingFilePath = "src/main/resources/static" + existingPath;
-            try {
-                if (Files.exists(Paths.get(existingFilePath))) {
-                    Files.delete(Paths.get(existingFilePath)); // Xóa file cũ
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Lưu ảnh mới nếu có
+        String existingImageUrl = existingProduct.getDuongDan();
+        String existingPublicId = existingProduct.getPublicId();
+        // Nếu có file ảnh mới được tải lên
         if (!file.isEmpty()) {
             try {
-                String fileName = file.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/anhhethong/";
-
-                if (!Files.exists(Paths.get(uploadDir))) {
-                    Files.createDirectories(Paths.get(uploadDir));
+                // Xóa ảnh cũ từ Cloudinary nếu có
+                if (existingPublicId != null && !existingPublicId.isEmpty()) {
+                    dvlCloudinary.deleteImage(existingPublicId); // Tạo một hàm phụ để xóa ảnh từ Cloudinary
                 }
 
-                String filePath = uploadDir + UUID.randomUUID().toString() + "_" + fileName;
+                // Upload ảnh mới lên Cloudinary
+                Map<String, Object> uploadResult = dvlCloudinary.uploadImage(file); // Hàm phụ để upload ảnh
 
-                Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                // Lấy URL và public_id mới từ Cloudinary
+                String newImageUrl = (String) uploadResult.get("url");
+                String newPublicId = (String) uploadResult.get("public_id");
 
-                String savedFileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-                dl.setDuongDan("/anhhethong/" + savedFileName); // Cập nhật đường dẫn ảnh mới
+                // Cập nhật URL và public_id cho sản phẩm
+                dl.setDuongDan(newImageUrl);
+                dl.setPublicId(newPublicId);
+
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi tải ảnh lên!");
+                return "redirect:/admin/danhmuc";
             }
         } else {
-            // Nếu không có tệp mới, giữ nguyên đường dẫn ảnh cũ
-            dl.setDuongDan(existingPath);
+            // Nếu không có file mới, giữ nguyên thông tin ảnh cũ
+            dl.setDuongDan(existingImageUrl);
+            dl.setPublicId(existingPublicId);
         }
 
         dvl.luuDM(dl); // Lưu sản phẩm
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc cập nhật!");
 
-        return "redirect:/admin/danhmuc/duyet";
+        return "redirect:/admin/danhmuc";
     }
 
     @PostMapping("/danhmuc/xoa")
-    public String postXoa(Model model, @RequestParam("Id") int id, RedirectAttributes redirectAttributes) {
+    public String postXoa(Model model, @RequestParam("Id") int id, RedirectAttributes redirectAttributes)
+            throws IOException {
         if (Qdl.NVChuaDangNhap(request))
             return "redirect:/admin/nhanvien/dangnhap";
 
@@ -183,6 +178,6 @@ public class QdlDanhMuc {
 
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc xóa !");
 
-        return "redirect:/admin/danhmuc/duyet";
+        return "redirect:/admin/danhmuc";
     }
 }

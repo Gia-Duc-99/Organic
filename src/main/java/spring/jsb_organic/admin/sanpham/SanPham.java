@@ -33,6 +33,7 @@ public class SanPham {
     private LocalDate ngaySua;
     private String tenSP;
     private String anh;
+    private String publicId;  // public_id của ảnh trên Cloudinary
     private int soLuong;
     private Boolean noiBat = false;
 

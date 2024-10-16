@@ -18,4 +18,6 @@ public interface KdlSanPham extends JpaRepository<SanPham, Integer> {
 
     @Query("SELECT sp FROM SanPham sp WHERE sp.noiBat = true")
     List<SanPham> findTopSanPhamNoiBat(Pageable pageable);
+
+    List<SanPham> findByTenSPContaining(String tenSp);
 }

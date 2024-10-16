@@ -15,6 +15,7 @@
                         <th>Email</th>
                         <th>Số Điện Thoại</th>
                         <th>Trạng Thái</th>
+                        <th>Thanh Toán</th>
                         <th>Ngày Tạo</th>
                         <th>Action</th>
                     </tr>
@@ -26,6 +27,7 @@
                         <th>Email</th>
                         <th>Số Điện Thoại</th>
                         <th>Trạng Thái</th>
+                        <th>Thanh Toán</th>
                         <th>Ngày Tạo</th>
                         <th>Action</th>
                     </tr>
@@ -37,6 +39,7 @@
                         <td th:text="${dl.email}"></td>
                         <td th:text="${dl.dienThoai}"></td>
                         <td th:text="${dl.trangThai.trangThaiVi}"></td>
+                        <td th:text="${dl.TrangThaiThanhToanVi}"></td>
                         <td th:text="${dl.ngayTao}"></td>
                         <td>
                             <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.id} + ')'">
@@ -44,8 +47,8 @@
                             </button>
                             &nbsp;
                             <button class="btn btn-outline-warning" th:data-id="${dl.id}"
-                                th:onclick="capNhatTrangThai(this)">
-                                <i class="bi bi-pencil-fill"></i>Sửa
+                                th:data-trangthai="${dl.trangThai}" th:onclick="capNhatTrangThai(this)">
+                                <i class="bi bi-pencil-fill"></i>Cập nhật
                             </button>
                         </td>
                     </tr>
@@ -90,6 +93,7 @@
     function capNhatTrangThai(button) {
         document.getElementById('modalActionBtn').style.display = 'none';
         var donHangId = button.getAttribute("data-id");
+        var row = button.closest('tr');
 
         // Gửi yêu cầu POST để cập nhật trạng thái đơn hàng
         $.ajax({
@@ -100,8 +104,37 @@
             },
             success: function (response) {
                 if (response === "success") {
+                    var currentStatus = row.querySelector('td:nth-child(5)').textContent; // Giả sử cột trạng thái là cột thứ 5
+                    var newStatus;
+
+                    // Chuyển đổi trạng thái
+                    switch (currentStatus) {
+                        case "Mới":
+                            newStatus = "Đã Xác Nhận";
+                            break;
+                        case "Đã Xác Nhận":
+                            newStatus = "Đang Giao";
+                            break;
+                        case "Đang Giao":
+                            newStatus = "Đã Giao";
+                            break;
+                        case "Đã Giao":
+                            newStatus = "Hoàn Tất";
+                            break;
+                        default:
+                            newStatus = currentStatus; // Nếu không có sự thay đổi
+                    }
+
+                    // Cập nhật cột trạng thái trong hàng
+                    row.querySelector('td:nth-child(5)').textContent = newStatus; // Cập nhật cột trạng thái
+
+                    // Cập nhật cột trạng thái thanh toán nếu cần
+                    if (newStatus === "Đã Giao") {
+                        row.querySelector('td:nth-child(6)').textContent = "Đã Thanh Toán"; // Giả sử cột thanh toán là cột thứ 6
+                    }
+
                     // Hiển thị modal thông báo thành công
-                    $('#modalContent').html('<p>Đơn hàng đã được cập nhật thành "Đã Xác Nhận".</p>');
+                    $('#modalContent').html('<p>Đơn hàng đã được cập nhật thành "' + newStatus + '".</p>');
                     $('#showModal').modal('show');
 
                 } else {

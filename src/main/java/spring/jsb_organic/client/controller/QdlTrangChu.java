@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +73,7 @@ public class QdlTrangChu {
     public String getShopList(Model model) {
         model.addAttribute("dsQuangCao", dvlQuangCao.dsQCChoPhep());
         model.addAttribute("dsSanPhamNoiBat", dvlSanPham.dsSanPham());
-
+        model.addAttribute("sanPhamMoi", dvlSanPham.getSanPhamMoi());
         model.addAttribute("dsSanPham", dvlSanPham.dsSanPham());
         model.addAttribute("dsDanhMuc", dvlDanhMuc.dsDanhMuc());
 
@@ -82,11 +84,31 @@ public class QdlTrangChu {
         return "layout/layout-client.html";
     }
 
+    @GetMapping("/trangchu/search")
+    public String search(@RequestParam("query") String query, Model model) {
+        List<SanPham> resultList = dvlSanPham.searchProducts(query);
+        if (resultList == null || resultList.isEmpty()) {
+            model.addAttribute("message", "Không tìm thấy sản phẩm nào khớp với từ khóa.");
+            resultList = new ArrayList<>(); // Khởi tạo danh sách trống nếu không có kết quả
+        }
+        List<SanPham> sanPhamMoi = dvlSanPham.getSanPhamMoi();
+        if (sanPhamMoi == null) {
+            sanPhamMoi = new ArrayList<>();
+        }
+        model.addAttribute("sanPhamMoi", sanPhamMoi);
+        model.addAttribute("dsSanPham", resultList);
+        model.addAttribute("title", "Search Results");
+        model.addAttribute("totalProducts", resultList.size());
+        model.addAttribute("query", query);
+        model.addAttribute("content", "/client/trangchu/shop.html"); // Đảm bảo bạn chỉ định content
+        return "layout/layout-client.html"; // Trả về layout với content
+    }
+
     @GetMapping({
             "/trangchu/chitietsanpham/{id}"
     })
     public String getChiTietSP(@PathVariable("id") int id, Model model) {
-        SanPham sanPham = dvlSanPham.timSP(id);
+        SanPham sanPham = dvlSanPham.xemSP(id);
         if (sanPham == null) {
             // Nếu sản phẩm không tồn tại, chuyển hướng đến trang lỗi hoặc trang khác
             return "redirect:/trangchu";
@@ -115,41 +137,45 @@ public class QdlTrangChu {
     @PostMapping("/trangchu/dangnhap")
     public String postDangNhap(Model model,
             RedirectAttributes redirectAttributes,
-            @RequestParam("TenDangNhap") String TenDangNhap,
-            @RequestParam("MatKhau") String MatKhau,
+            @RequestParam("TenDangNhap") String tenDangNhap,
+            @RequestParam("MatKhau") String matKhau,
             HttpServletRequest request,
             HttpSession session) {
 
-        String old_password = null;
+        // Kiểm tra xem tên đăng nhập có tồn tại không
+        if (dvl.tonTaiTenDangNhap(tenDangNhap)) {
+            var khachHang = dvl.timKHTheoTenDangNhap(tenDangNhap);
+            String oldPassword = khachHang.getMatKhau();
 
-        if (dvl.tonTaiTenDangNhap(TenDangNhap)) {
-            var old_dl = dvl.timKHTheoTenDangNhap(TenDangNhap);
-            old_password = old_dl.getMatKhau();
+            // Kiểm tra xem mật khẩu có khớp không
+            boolean isPasswordMatched = BCrypt.checkpw(matKhau, oldPassword);
+            if (isPasswordMatched) {
+                System.out.println("\n Đăng nhập thành công");
 
-            var mật_khẩu_khớp = BCrypt.checkpw(MatKhau, old_password);
+                // Lưu thông tin khách hàng vào session
+                request.getSession().setAttribute("KhachHang_Id", khachHang.getId());
+                request.getSession().setAttribute("KhachHang_Ten", khachHang.getTen());
+                request.getSession().setAttribute("KhachHang_AnhDaiDien", khachHang.getAnh());
+                // Kiểm tra xem có URL trước khi đăng nhập không
+                String uriBeforeLogin = (String) session.getAttribute("URI_BEFORE_LOGIN");
+                if (uriBeforeLogin == null || uriBeforeLogin.isEmpty()) {
+                    uriBeforeLogin = "/trangchu"; // Nếu không có, chuyển hướng về trang chủ
+                }
 
-            if (mật_khẩu_khớp) {
-                System.out.println("\n Đúng tài khoản, đăng nhập thành công");
+                return "redirect:" + uriBeforeLogin;
 
-                request.getSession().setAttribute("KhachHang_Id", old_dl.getId());
-                request.getSession().setAttribute("KhachHang_Ten", old_dl.getTen());
-                request.getSession().setAttribute("KhachHang_AnhDaiDien", old_dl.getAnh());
             } else {
+                // Sai mật khẩu
                 System.out.println("\n Sai mật khẩu");
-
                 redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Sai mật khẩu !");
                 return "redirect:/client/nhanvien/loidangnhap";
             }
         } else {
+            // Tên đăng nhập không tồn tại
             System.out.println("\n Không tồn tại tên đăng nhập");
             redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Sai tên đăng nhập !");
             return "redirect:/client/nhanvien/loidangnhap";
         }
-
-        var uriBeforeLogin = (String) session.getAttribute("URI_BEFORE_LOGIN");
-        if (uriBeforeLogin == null)
-            uriBeforeLogin = "/trangchu";
-        return "redirect:" + uriBeforeLogin;
     }
 
     @GetMapping({ "/trangchu/dangky" })

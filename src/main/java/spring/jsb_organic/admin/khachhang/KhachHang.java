@@ -31,6 +31,7 @@ public class KhachHang {
     @Transient
     private MultipartFile mtFile;
     private String anh;
+    private String publicId;  // public_id của ảnh trên Cloudinary
     private String diaChi;
     @Email(message = "Email không hợp lệ")
     @NotBlank(message = "Email không được để trống")

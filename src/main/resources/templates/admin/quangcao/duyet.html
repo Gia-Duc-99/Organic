@@ -41,9 +41,9 @@
                         </td>
                         <td th:text="${dl.ngayTao}"></td>
                         <td th:text="${dl.ngaySua}"></td>
-                        <td th:text="${dl.trangThai}"></td>
+                        <td th:text="${dl.getTrangThaiVi}"></td>
                         <td th:text="${dl.tuaDe}"></td>
-                        <td th:text="${dl.giaTien}"></td>
+                        <td th:text="${dl.getGiaTienVi} + 'đ'"></td>
                         <td>
                             <button class="btn btn-outline-info" th:onclick="'showViewModal(' + ${dl.Id} + ')'">
                                 <i class="bi bi-eye"></i>Xem

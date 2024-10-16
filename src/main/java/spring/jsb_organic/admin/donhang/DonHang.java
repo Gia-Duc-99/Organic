@@ -39,6 +39,7 @@ public class DonHang {
     private String tongTien;
     @Enumerated(EnumType.STRING)
     private TrangThaiDonHang trangThai;
+    private Boolean trangThaiThanhToan;
     private LocalDate ngayTao;
     private LocalDate ngaySua;
     @OneToMany(mappedBy = "donHang")
@@ -57,8 +58,6 @@ public class DonHang {
     public enum TrangThaiDonHang {
         MOI("Mới"),
         DA_XAC_NHAN("Đã Xác Nhận"),
-        CHUA_THANH_TOAN("Chưa Thanh Toán"),
-        DA_THANH_TOAN("Đã Thanh Toán"),
         DA_HUY("Đã Hủy"),
         DANG_GIAO("Đang Giao"),
         DA_GIAO("Đã Giao");
@@ -74,5 +73,12 @@ public class DonHang {
         public String getTrangThaiVi() {
             return trangThaiVi;
         }
+    }
+
+    public String getTrangThaiThanhToanVi() {
+        if (trangThaiThanhToan == null) {
+            return "Thông tin không có"; // Hoặc giá trị mặc định khác
+        }
+        return this.trangThaiThanhToan ? "Đã Thanh Toán" : "Chưa Thanh Toán";
     }
 }

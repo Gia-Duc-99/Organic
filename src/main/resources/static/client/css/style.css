@@ -1025,6 +1025,7 @@ ol {
 
 .latest-product__item__pic {
 	float: left;
+	position: relative;
 	margin-right: 26px;
 }
 
@@ -1032,6 +1033,25 @@ ol {
 	height: 110px;
 	width: 110px;
 }
+
+/* Định dạng cho badge giảm giá */
+.discount-badge {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	background-color: red;
+	/* Màu nền đỏ để nổi bật */
+	color: white;
+	/* Chữ màu trắng */
+	padding: 4px 8px;
+	font-size: 12px;
+	font-weight: bold;
+	border-radius: 50%;
+	/* Góc bo tròn cho badge */
+	z-index: 1;
+	/* Đảm bảo badge nằm trên ảnh */
+}
+
 
 .latest-product__item__text {
 	overflow: hidden;
@@ -1291,48 +1311,6 @@ ol {
 	padding-bottom: 80px;
 }
 
-.product__discount {
-	padding-bottom: 50px;
-}
-
-.product__discount__title {
-	text-align: left;
-	margin-bottom: 65px;
-}
-
-.product__discount__title h2 {
-	display: inline-block;
-}
-
-.product__discount__title h2:after {
-	margin: 0;
-	width: 100%;
-}
-
-.product__discount__item:hover .product__discount__item__pic .product__item__pic__hover {
-	bottom: 20px;
-}
-
-.product__discount__item__pic {
-	height: 270px;
-	position: relative;
-	overflow: hidden;
-}
-
-.product__discount__item__pic .product__discount__percent {
-	height: 45px;
-	width: 45px;
-	background: #dd2222;
-	border-radius: 50%;
-	font-size: 14px;
-	color: #ffffff;
-	line-height: 45px;
-	text-align: center;
-	position: absolute;
-	left: 15px;
-	top: 15px;
-}
-
 .product__item__pic__hover {
 	position: absolute;
 	left: 0;
@@ -1392,65 +1370,6 @@ ol {
 	-ms-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
-}
-
-.product__discount__item__text {
-	text-align: center;
-	padding-top: 20px;
-}
-
-.product__discount__item__text span {
-	font-size: 14px;
-	color: #b2b2b2;
-	display: block;
-	margin-bottom: 4px;
-}
-
-.product__discount__item__text h5 {
-	margin-bottom: 6px;
-}
-
-.product__discount__item__text h5 a {
-	color: #1c1c1c;
-}
-
-.product__discount__item__text .product__item__price {
-	font-size: 18px;
-	color: #1c1c1c;
-	font-weight: 700;
-}
-
-.product__discount__item__text .product__item__price span {
-	display: inline-block;
-	font-weight: 400;
-	text-decoration: line-through;
-	margin-left: 10px;
-}
-
-.product__discount__slider .col-lg-4 {
-	max-width: 100%;
-}
-
-.product__discount__slider.owl-carousel .owl-dots {
-	text-align: center;
-	margin-top: 30px;
-}
-
-.product__discount__slider.owl-carousel .owl-dots button {
-	height: 12px;
-	width: 12px;
-	border: 1px solid #b2b2b2;
-	border-radius: 50%;
-	margin-right: 12px;
-}
-
-.product__discount__slider.owl-carousel .owl-dots button.active {
-	background: #707070;
-	border-color: #6f6f6f;
-}
-
-.product__discount__slider.owl-carousel .owl-dots button:last-child {
-	margin-right: 0;
 }
 
 .filter__item {

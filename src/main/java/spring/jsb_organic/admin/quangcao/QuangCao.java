@@ -4,8 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,17 +23,21 @@ public class QuangCao {
     private int id;
 
     private String tuaDe;
-    private String tuaDePhu;
+    private String noiDung;
     private String moTa;
     private float giaTien;
     private Boolean trangThai;
     private Boolean choPhep;
+    @Transient
+    private MultipartFile mtFile;
     private String anh;
+    private String publicId;  // public_id của ảnh trên Cloudinary
     private String link;
     private String thuTu;
 
     private LocalDate ngayTao;
     private LocalDate ngaySua;
+    
     public String getTrangThaiVi() {
         return this.trangThai ? "Đã Thanh Toán" : "Chưa Thanh Toán";
     }
@@ -55,10 +64,6 @@ public class QuangCao {
 
     public String getGiaTienVi() {
         return String.format("%,d", Math.round(this.giaTien));
-    }
-
-    public String getGiaTienVietnamDong() {
-        return String.format("%,d", Math.round(this.giaTien)) + " ₫";
     }
 
     public Boolean KhongHopLe() {

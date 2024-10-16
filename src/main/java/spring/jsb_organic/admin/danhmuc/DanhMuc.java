@@ -21,6 +21,7 @@ public class DanhMuc {
     @Transient
     private MultipartFile mtFile;
     private String duongDan;
+    private String publicId;  // public_id của ảnh trên Cloudinary
 
     public MultipartFile getMtFile() {
         return mtFile;

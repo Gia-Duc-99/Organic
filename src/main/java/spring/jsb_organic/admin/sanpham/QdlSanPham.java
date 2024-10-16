@@ -1,7 +1,7 @@
 package spring.jsb_organic.admin.sanpham;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import spring.jsb_organic.admin.danhmuc.DvlDanhMuc;
+import spring.jsb_organic.DvlCloudinary;
 import spring.jsb_organic.admin.danhmuc.DanhMuc;
 import spring.jsb_organic.admin.nhacungcap.DvlNhaCungCap;
 import spring.jsb_organic.admin.nhacungcap.NhaCungCap;
@@ -22,9 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 
 @Controller
@@ -32,6 +30,9 @@ import java.time.LocalDate;
 public class QdlSanPham {
     @Autowired
     private DvlSanPham dvl;
+
+    @Autowired
+    private DvlCloudinary dvlCloudinary;
 
     @Autowired
     private DvlNhaCungCap service;
@@ -46,8 +47,7 @@ public class QdlSanPham {
     private HttpSession session;
 
     @GetMapping({
-            "/sanpham",
-            "/sanpham/duyet"
+            "/sanpham"
     })
     public String getDuyet(Model model) {
         session.setAttribute("URI_BEFORE_LOGIN", request.getRequestURI());
@@ -56,7 +56,7 @@ public class QdlSanPham {
             return "redirect:/admin/nhanvien/dangnhap";
         }
 
-        List<SanPham> list = dvl.duyetSP();
+        List<SanPham> list = dvl.dsSanPham();
         SanPham dl = new SanPham();
         List<NhaCungCap> nhaCungCap = service.dsNhaCungCap();
         model.addAttribute("ncc", nhaCungCap);
@@ -101,7 +101,7 @@ public class QdlSanPham {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi xóa: " + e.getMessage());
         }
 
-        return "redirect:/admin/sanpham/duyet";
+        return "redirect:/admin/sanpham";
     }
 
     @GetMapping("/sanpham/xem")
@@ -134,7 +134,7 @@ public class QdlSanPham {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi thêm mới: " + e.getMessage());
         }
 
-        return "redirect:/admin/sanpham/duyet";
+        return "redirect:/admin/sanpham";
     }
 
     @PostMapping("/sanpham/sua")
@@ -146,63 +146,58 @@ public class QdlSanPham {
         SanPham existingProduct = dvl.xemSP(dl.getId());
         if (existingProduct == null) {
             redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Sản phẩm không tồn tại!");
-            return "redirect:/admin/sanpham/duyet";
+            return "redirect:/admin/sanpham";
         }
 
-        // Lưu đường dẫn ảnh cũ
-        String existingPath = existingProduct.getAnh();
+        // Lưu thông tin đường dẫn và public_id của ảnh cũ
+        String existingImageUrl = existingProduct.getAnh();
+        String existingPublicId = existingProduct.getPublicId();
         dl.setNgaySua(LocalDate.now());
 
-        // Xóa ảnh cũ nếu có
-        if (existingPath != null && !existingPath.isEmpty()) {
-            String existingFilePath = "src/main/resources/static" + existingPath;
-            try {
-                if (Files.exists(Paths.get(existingFilePath))) {
-                    Files.delete(Paths.get(existingFilePath)); // Xóa file cũ
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Lưu ảnh mới nếu có
+        // Nếu có file ảnh mới được tải lên
         if (!file.isEmpty()) {
             try {
-                String fileName = file.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/anhhethong/";
-
-                if (!Files.exists(Paths.get(uploadDir))) {
-                    Files.createDirectories(Paths.get(uploadDir));
+                // Xóa ảnh cũ từ Cloudinary nếu có
+                if (existingPublicId != null && !existingPublicId.isEmpty()) {
+                    dvlCloudinary.deleteImage(existingPublicId); // Tạo một hàm phụ để xóa ảnh từ Cloudinary
                 }
 
-                String filePath = uploadDir + UUID.randomUUID().toString() + "_" + fileName;
+                // Upload ảnh mới lên Cloudinary
+                Map<String, Object> uploadResult = dvlCloudinary.uploadImage(file); // Hàm phụ để upload ảnh
 
-                Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                // Lấy URL và public_id mới từ Cloudinary
+                String newImageUrl = (String) uploadResult.get("url");
+                String newPublicId = (String) uploadResult.get("public_id");
 
-                String savedFileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-                dl.setAnh("/anhhethong/" + savedFileName); // Cập nhật đường dẫn ảnh mới
+                // Cập nhật URL và public_id cho sản phẩm
+                dl.setAnh(newImageUrl);
+                dl.setPublicId(newPublicId);
+
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("THONG_BAO_LOI", "Có lỗi xảy ra khi tải ảnh lên!");
+                return "redirect:/admin/sanpham";
             }
         } else {
-            // Nếu không có tệp mới, giữ nguyên đường dẫn ảnh cũ
-            dl.setAnh(existingPath);
+            // Nếu không có file mới, giữ nguyên thông tin ảnh cũ
+            dl.setAnh(existingImageUrl);
+            dl.setPublicId(existingPublicId);
         }
 
         dvl.luuSP(dl); // Lưu sản phẩm
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc cập nhật!");
 
-        return "redirect:/admin/sanpham/duyet";
+        return "redirect:/admin/sanpham";
     }
 
     @PostMapping("/sanpham/xoa")
-    public String postXoa(Model model, @RequestParam("Id") int id, RedirectAttributes redirectAttributes) {
+    public String postXoa(Model model, @RequestParam("Id") int id, RedirectAttributes redirectAttributes) throws IOException {
         if (Qdl.NVChuaDangNhap(request))
             return "redirect:/admin/nhanvien/dangnhap";
 
         this.dvl.xoaSP(id);
         redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đã hoàn tất việc xóa !");
 
-        return "redirect:/admin/sanpham/duyet";
+        return "redirect:/admin/sanpham";
     }
 }

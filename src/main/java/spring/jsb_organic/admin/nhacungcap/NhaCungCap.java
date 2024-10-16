@@ -25,9 +25,10 @@ public class NhaCungCap {
     private LocalDate ngayTao;
     private LocalDate ngaySua;
     private Boolean choPhep;
-    private String phone;
+    private String dienThoai;
     private String ten;
     private String anh;
+    private String publicId;  // public_id của ảnh trên Cloudinary
     private String link;
     @Column(columnDefinition = "LONGTEXT")
     private String moTa;
