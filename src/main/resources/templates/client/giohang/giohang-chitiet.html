@@ -35,7 +35,7 @@
                         <tbody>
                             <tr th:each="sp:${cartData}">
                                 <td class="shoping__cart__item" data-th="Product">
-                                    <img th:src="${sp.get('anh')}" alt="">
+                                    <img th:src="${sp.get('anh')}" style="width: 270px;" alt="">
                                     <h5 th:text="${sp.get('ten')}">Tên Sản Phẩm</h5>
                                 </td>
                                 <td class="shoping__cart__price" data-th="Price">

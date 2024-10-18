@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import spring.jsb_organic.admin.danhmuc.DvlDanhMuc;
+import spring.jsb_organic.admin.donhang.DonHang;
+import spring.jsb_organic.admin.donhang.DvlDonHang;
 import spring.jsb_organic.admin.khachhang.DvlKhachHang;
 import spring.jsb_organic.admin.khachhang.KhachHang;
 import spring.jsb_organic.admin.quangcao.DvlQuangCao;
@@ -38,6 +40,9 @@ public class QdlTrangChu {
 
     @Autowired
     private DvlKhachHang dvl;
+
+    @Autowired
+    private DvlDonHang dvlDonHang;
 
     @Autowired
     private DvlQuangCao dvlQuangCao;
@@ -225,5 +230,31 @@ public class QdlTrangChu {
     public String dangXuat(HttpSession session) {
         session.invalidate(); // Xoá tất cả thông tin trong session
         return "redirect:/trangchu"; // Quay về trang chủ sau khi đăng xuất
+    }
+
+    @GetMapping({
+            "/trangchu/thongtintaikhoan"
+    })
+    public String getThongTinTaiKhoan(Model model) {
+        // Lấy thông tin khách hàng từ session
+        Integer khachHangId = (Integer) session.getAttribute("KhachHang_Id");
+        if (khachHangId != null) {
+            // Khách hàng đã đăng nhập
+            KhachHang khachHang = dvl.xemKH(khachHangId); // Lấy thông tin khách hàng từ database
+            model.addAttribute("khachHang", khachHang); // Gửi thông tin khách hàng sang view
+    
+            // Lấy danh sách đơn hàng cho khách hàng này
+            List<DonHang> danhSachDonHang = dvlDonHang.findByKhachHangId(khachHangId);
+            model.addAttribute("danhSachDonHang", danhSachDonHang);
+        } else {
+            // Khách hàng chưa đăng nhập, hiển thị thông báo hoặc giao diện khác
+            model.addAttribute("khachHang", null); // Không có thông tin khách hàng
+            model.addAttribute("danhSachDonHang", null); // Không có đơn hàng
+            model.addAttribute("THONG_BAO", 
+                    "Bạn hiện đang ở chế độ khách vãng lai. Vui lòng đăng nhập để xem thông tin tài khoản và đơn hàng.");
+        }
+
+        model.addAttribute("content", "/client/trangchu/thongtinkh.html");
+        return "layout/layout-client.html";
     }
 }

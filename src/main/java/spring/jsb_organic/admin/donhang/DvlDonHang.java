@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import spring.jsb_organic.admin.donhang.DonHang.TrangThaiDonHang;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Service
 public class DvlDonHang {
@@ -21,19 +18,8 @@ public class DvlDonHang {
         return kdl.findAll();
     }
 
-    public DonHang timDH(int id) {
-
-        DonHang dl = null;
-
-        Optional<DonHang> optional = kdl.findById(id);
-
-        if (optional.isPresent()) {
-            dl = optional.get();
-        } else {
-        }
-
-        return dl;
-
+    public List<DonHang> findByKhachHangId(int maKH) {
+        return kdl.findByKhachHangId(maKH);
     }
 
     public DonHang xemDH(int id) {

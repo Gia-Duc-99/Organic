@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -83,7 +84,6 @@ public class QdlGioHang {
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new HashMap<Integer, Integer>());
         }
-        System.out.println("TongGiaTriGioHangVi: " + session.getAttribute("TongGiaTriGioHangVi"));
         @SuppressWarnings("unchecked")
         Map<Integer, Integer> cartMap = (Map<Integer, Integer>) session.getAttribute("cart");
 
@@ -101,6 +101,7 @@ public class QdlGioHang {
         data.put("price", sp.getDonGia());
         data.put("totalCart", session.getAttribute("TongGiaTriGioHang"));
         data.put("totalCartVi", tongGiaTriGioHangVi());
+        System.out.println("TongGiaTriGioHangVi: " + session.getAttribute("TongGiaTriGioHangVi"));
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -287,6 +288,7 @@ public class QdlGioHang {
 
     @GetMapping("/trangchu/giohang/thanhtoan")
     public String getGioHangThanhToan(Model model) {
+        session.setAttribute("URI_BEFORE_LOGIN", request.getRequestURI());
         if (Qdl.KHChuaDangNhap(request)) {
             // Nếu chưa đăng nhập, chuyển hướng tới trang đăng nhập
             return "redirect:/trangchu/dangnhap";
@@ -348,7 +350,7 @@ public class QdlGioHang {
             @RequestParam("diaChi") String diaChi,
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("phuongThucThanhToan") String phuongThucThanhToan,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
         try {
             // Lấy giỏ hàng từ session
             @SuppressWarnings("unchecked")
@@ -361,26 +363,22 @@ public class QdlGioHang {
             DonHang donHang = new DonHang();
             donHang.setNgayTao(LocalDate.now()); // Ngày tạo đơn hàng
 
-            // Kiểm tra xem khách hàng đã đăng nhập hay chưa
+            // Lấy mã khách hàng từ session (đảm bảo khách hàng đã đăng nhập)
             Integer maKhachHang = (Integer) session.getAttribute("maKhachHang");
-            if (maKhachHang != null) {
-                // Khách hàng là thành viên
-                KhachHang khachHang = dvlKhachHang.xemKH(maKhachHang); // Lấy thông tin khách hàng từ database
-                donHang.setKhachHang(khachHang); // Gán đối tượng khách hàng vào đơn hàng
-            } else {
-                // Khách vãng lai
-                donHang.setEmail(email);
-                donHang.setDienThoai(dienThoai);
-                donHang.setTenDayDu(tenDayDu);
-                donHang.setDiaChi(diaChi);
+            if (maKhachHang == null) {
+                // Nếu khách hàng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                return "redirect:/dangnhap";
             }
+            // Lấy thông tin khách hàng đã đăng nhập từ database
+            KhachHang khachHang = dvlKhachHang.xemKH(maKhachHang);
+            donHang.setKhachHang(khachHang);
 
             donHang.setGhiChu(ghiChu);
             donHang.setTrangThai(DonHang.TrangThaiDonHang.MOI); // Đơn hàng đã thanh toán thành công
 
             // Tính tổng tiền đơn hàng
             float tongTien = tongGiaTriGioHang();
-            donHang.setTongTien(String.valueOf(tongTien));
+            donHang.setTongTien(tongTien);
 
             // Xác định phương thức thanh toán
             if ("the".equals(phuongThucThanhToan)) {
@@ -416,7 +414,7 @@ public class QdlGioHang {
             session.setAttribute("TongGiaTriGioHangVi", "0");
 
             // Hiển thị thông báo đặt hàng thành công
-            model.addAttribute("message", "Đặt hàng thành công!");
+            redirectAttributes.addFlashAttribute("THONG_BAO_OK", "Đặt hàng thành công!");
 
             return "redirect:/trangchu";
 

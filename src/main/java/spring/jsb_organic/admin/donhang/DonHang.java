@@ -2,6 +2,7 @@ package spring.jsb_organic.admin.donhang;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -36,7 +37,7 @@ public class DonHang {
     private String tenDayDu;
     private String diaChi;
     private String ghiChu;
-    private String tongTien;
+    private float tongTien;
     @Enumerated(EnumType.STRING)
     private TrangThaiDonHang trangThai;
     private Boolean trangThaiThanhToan;
@@ -80,5 +81,20 @@ public class DonHang {
             return "Thông tin không có"; // Hoặc giá trị mặc định khác
         }
         return this.trangThaiThanhToan ? "Đã Thanh Toán" : "Chưa Thanh Toán";
+    }
+
+    public String getNgayTaoVi() {
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.ngayTao);
+    }
+
+    public String getNgaySuaVi() {
+        if (this.ngaySua == null) {
+            return "Ngày sửa chưa được cập nhật"; // Thông báo nếu ngày sửa là null
+        }
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.ngaySua);
+    }
+
+    public String getTongTienVi() {
+        return String.format("%,d", Math.round(this.tongTien));
     }
 }

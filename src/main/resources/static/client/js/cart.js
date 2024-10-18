@@ -10,7 +10,9 @@ var cart = {
 			},
 			dataType: 'json',
 			success: function (json) {
+				console.log("Response:", json);
 				if (json.success) {
+					console.log(json.total);
 					// Cập nhật tổng sản phẩm và tổng tiền
 					$('#cart-total').text(json.total);
 					$('#cart_total_price').text(json.totalCartVi + ' đ');
